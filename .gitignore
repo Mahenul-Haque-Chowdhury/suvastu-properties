@@ -1,0 +1,33 @@
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+
+# Environment files
+.env*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# TypeScript / tooling
+*.tsbuildinfo
+.eslintcache
+
+# Local artifacts
+playwright-report/
+test-results/
+tmp/
+temp/

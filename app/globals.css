@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  
+  --color-brand-white: #FFFFFF;
+  --color-brand-pearl: #E6EAED;
+  --color-brand-stone: #C2C5C5;
+  --color-brand-cloud: #A0A4A5;
+  --color-brand-granite: #767F84;
+  --color-brand-charcoal: #535A5F;
+  --color-brand-black: #1B2127;
+
+  --color-background: var(--color-brand-white);
+  --color-foreground: var(--color-brand-charcoal);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground font-sans selection:bg-brand-stone selection:text-brand-black;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
