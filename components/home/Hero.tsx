@@ -211,11 +211,12 @@ export default function Hero() {
     const bodyTile = getTileMotion(layer, 0.18, 22);
     const ctaTile = getTileMotion(layer, 0.24, 18);
     const statsTile = getTileMotion(layer, 0.3, 16);
+    const laptopHeightClass = '[@media(min-width:768px)_and_(max-height:780px)]:min-h-[150px] [@media(min-width:768px)_and_(max-height:780px)]:mb-3';
 
     return (
       <motion.div
         key={`${project.projectName}-${layer}-copy`}
-        className="absolute inset-0 flex h-full w-full flex-col justify-center px-8 pb-6 pt-20 md:px-10 md:pb-8 md:pt-22 xl:px-12 xl:pb-10 xl:pt-28"
+        className="absolute inset-0 flex h-full w-full flex-col justify-center px-8 pb-6 pt-20 md:px-10 md:pb-8 md:pt-22 xl:px-12 xl:pb-10 xl:pt-28 [@media(min-width:768px)_and_(max-height:780px)]:px-8 [@media(min-width:768px)_and_(max-height:780px)]:pb-5 [@media(min-width:768px)_and_(max-height:780px)]:pt-16"
         initial={false}
         style={{
           opacity: 1,
@@ -223,8 +224,8 @@ export default function Hero() {
           pointerEvents: isCurrentLayer && transitionProgress < 0.6 ? 'auto' : 'none'
         }}
       >
-        <motion.div className={project.titleMinHeight ?? 'min-h-[220px] md:min-h-[220px] xl:min-h-[280px] 2xl:min-h-[320px]'} style={headlineTile}>
-          <motion.h1 className="max-w-[340px] text-[50px] font-semibold leading-[0.9] tracking-[-0.045em] text-brand-black md:max-w-[320px] md:text-[52px] lg:text-[58px] xl:max-w-[360px] xl:text-[64px] 2xl:text-[72px]">
+        <motion.div className={`${project.titleMinHeight ?? 'min-h-[220px] md:min-h-[220px] xl:min-h-[280px] 2xl:min-h-[320px]'} ${laptopHeightClass}`} style={headlineTile}>
+          <motion.h1 className="max-w-[340px] text-[50px] font-semibold leading-[0.9] tracking-[-0.045em] text-brand-black md:max-w-[320px] md:text-[52px] lg:text-[58px] xl:max-w-[360px] xl:text-[64px] 2xl:text-[72px] [@media(min-width:768px)_and_(max-height:780px)]:max-w-[280px] [@media(min-width:768px)_and_(max-height:780px)]:text-[42px] [@media(min-width:768px)_and_(max-height:780px)]:leading-[0.92]">
             {project.titleLines.map((line) => (
               <span key={line} className="block">
                 {line}
@@ -232,12 +233,12 @@ export default function Hero() {
             ))}
           </motion.h1>
         </motion.div>
-        <motion.div className="mb-4 min-h-[86px] md:min-h-[88px] xl:mb-5 xl:min-h-[110px]" style={bodyTile}>
-          <motion.p className="max-w-[360px] text-[15px] leading-7 text-brand-charcoal md:max-w-[320px] md:text-[15px] md:leading-7 xl:max-w-[360px] xl:text-base xl:leading-8">
+        <motion.div className="mb-4 min-h-[86px] md:min-h-[88px] xl:mb-5 xl:min-h-[110px] [@media(min-width:768px)_and_(max-height:780px)]:mb-3 [@media(min-width:768px)_and_(max-height:780px)]:min-h-[72px]" style={bodyTile}>
+          <motion.p className="max-w-[360px] text-[15px] leading-7 text-brand-charcoal md:max-w-[320px] md:text-[15px] md:leading-7 xl:max-w-[360px] xl:text-base xl:leading-8 [@media(min-width:768px)_and_(max-height:780px)]:max-w-[290px] [@media(min-width:768px)_and_(max-height:780px)]:text-[13px] [@media(min-width:768px)_and_(max-height:780px)]:leading-6">
             {project.desktopDescription ?? project.description}
           </motion.p>
         </motion.div>
-        <motion.div className="mb-3 xl:mb-4" style={ctaTile}>
+        <motion.div className="mb-3 xl:mb-4 [@media(min-width:768px)_and_(max-height:780px)]:mb-2" style={ctaTile}>
           <motion.div
             animate={navigatingTo === project.link ? { scale: 0.94, y: 2 } : { scale: 1, y: 0 }}
             whileTap={navigatingTo === project.link ? undefined : { scale: 0.972, y: 1 }}
@@ -249,7 +250,7 @@ export default function Hero() {
               onClick={(event) => handleExploreClick(event, project.link)}
               className="group inline-flex items-center"
             >
-              <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-black bg-brand-white transition-all duration-500 group-hover:bg-brand-black group-hover:shadow-[0_10px_24px_rgba(27,33,39,0.16)]">
+              <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-black bg-brand-white transition-all duration-500 group-hover:bg-brand-black group-hover:shadow-[0_10px_24px_rgba(27,33,39,0.16)] [@media(min-width:768px)_and_(max-height:780px)]:h-10 [@media(min-width:768px)_and_(max-height:780px)]:w-10">
                 <svg
                   width="16"
                   height="16"
@@ -262,7 +263,7 @@ export default function Hero() {
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
               </span>
-              <span className="-ml-6 flex h-12 min-w-[152px] items-center rounded-r-full border border-l-0 border-brand-black bg-brand-black px-6 pl-10 text-[11px] font-bold uppercase tracking-[0.24em] text-brand-white transition-all duration-500 group-hover:border-brand-black group-hover:bg-brand-white group-hover:pr-7 group-hover:text-brand-black">
+              <span className="-ml-6 flex h-12 min-w-[152px] items-center rounded-r-full border border-l-0 border-brand-black bg-brand-black px-6 pl-10 text-[11px] font-bold uppercase tracking-[0.24em] text-brand-white transition-all duration-500 group-hover:border-brand-black group-hover:bg-brand-white group-hover:pr-7 group-hover:text-brand-black [@media(min-width:768px)_and_(max-height:780px)]:h-10 [@media(min-width:768px)_and_(max-height:780px)]:min-w-[132px] [@media(min-width:768px)_and_(max-height:780px)]:px-5 [@media(min-width:768px)_and_(max-height:780px)]:pl-9 [@media(min-width:768px)_and_(max-height:780px)]:text-[10px]">
                 Explore
               </span>
             </Link>
@@ -273,14 +274,14 @@ export default function Hero() {
           <div className="h-[1px] flex-1 bg-brand-pearl" />
           <span>{project.accent}</span>
         </motion.div>
-        <motion.div className="mt-auto hidden w-full space-x-6 border-t border-brand-pearl pt-4 md:flex xl:space-x-8 xl:pt-5" style={statsTile}>
+        <motion.div className="mt-auto hidden w-full space-x-6 border-t border-brand-pearl pt-4 md:flex xl:space-x-8 xl:pt-5 [@media(min-width:768px)_and_(max-height:780px)]:space-x-5 [@media(min-width:768px)_and_(max-height:780px)]:pt-3" style={statsTile}>
           <div className="flex flex-col">
-            <span className="text-[28px] font-medium leading-none text-brand-black xl:text-2xl">30+</span>
-            <span className="mt-1 text-[9px] uppercase tracking-widest text-brand-cloud">Years of Excellence</span>
+            <span className="text-[28px] font-medium leading-none text-brand-black xl:text-2xl [@media(min-width:768px)_and_(max-height:780px)]:text-[24px]">30+</span>
+            <span className="mt-1 text-[9px] uppercase tracking-widest text-brand-cloud [@media(min-width:768px)_and_(max-height:780px)]:text-[8px]">Years of Excellence</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-[28px] font-medium leading-none text-brand-black xl:text-2xl">Thousands</span>
-            <span className="mt-1 text-[9px] uppercase tracking-widest text-brand-cloud">of Happy Families</span>
+            <span className="text-[28px] font-medium leading-none text-brand-black xl:text-2xl [@media(min-width:768px)_and_(max-height:780px)]:text-[24px]">Thousands</span>
+            <span className="mt-1 text-[9px] uppercase tracking-widest text-brand-cloud [@media(min-width:768px)_and_(max-height:780px)]:text-[8px]">of Happy Families</span>
           </div>
         </motion.div>
       </motion.div>
