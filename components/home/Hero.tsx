@@ -102,6 +102,7 @@ export default function Hero() {
   const [hasEntered, setHasEntered] = useState(false);
   const [isPinned, setIsPinned] = useState(true);
   const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
+  const heroScrollHeight = `${heroProjects.length * 72}svh`;
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
@@ -485,7 +486,7 @@ export default function Hero() {
         <section
           ref={mobileContainerRef}
           className="relative border-b border-brand-pearl bg-white"
-          style={{ height: `${heroProjects.length * 100}svh` }}
+          style={{ height: heroScrollHeight }}
         >
           <div className={isPinned
             ? 'fixed left-0 right-0 top-20 z-0 h-[calc(100svh-5rem)] overflow-hidden border-b border-brand-pearl bg-white'
@@ -553,7 +554,7 @@ export default function Hero() {
       <section
         ref={desktopContainerRef}
         className="relative hidden w-full border-b border-brand-pearl bg-white md:block"
-        style={{ height: `${heroProjects.length * 100}svh` }}
+        style={{ height: heroScrollHeight }}
       >
       <div
         className={isPinned
