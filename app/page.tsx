@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Hero from '@/components/home/Hero';
 import BrandStatement from '@/components/home/BrandStatement';
+import ProjectsInMotion from '@/components/home/ProjectsInMotion';
 import BrandWelcome from '@/components/home/BrandWelcome';
 import FunnelJourney from '@/components/home/FunnelJourney';
 import FeaturedProjects from '@/components/home/FeaturedProjects';
@@ -26,6 +27,7 @@ export default function Home() {
     <div className="relative bg-brand-white">
       <Hero />
       <BrandStatement />
+      <ProjectsInMotion />
       <FunnelJourney />
       <BrandWelcome />
       <FeaturedProjects />

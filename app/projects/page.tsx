@@ -54,6 +54,7 @@ export default function ProjectsPage() {
             <div className="w-10 h-[1px] bg-brand-granite"></div>
             <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Properties</span>
           </motion.div>
+
           <motion.h1 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -62,7 +63,7 @@ export default function ProjectsPage() {
           >
             Our Portfolio
           </motion.h1>
-          
+
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -142,6 +143,7 @@ export default function ProjectsPage() {
             );
           })}
         </div>
+
       </div>
     </div>
   );
