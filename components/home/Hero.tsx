@@ -215,7 +215,7 @@ export default function Hero() {
     return (
       <motion.div
         key={`${project.projectName}-${layer}-copy`}
-        className="absolute inset-0 flex h-full w-full flex-col justify-center px-8 pb-6 pt-24 md:px-12 md:pb-10 md:pt-28"
+        className="absolute inset-0 flex h-full w-full flex-col justify-center px-8 pb-6 pt-20 md:px-10 md:pb-8 md:pt-22 xl:px-12 xl:pb-10 xl:pt-28"
         initial={false}
         style={{
           opacity: 1,
@@ -223,8 +223,8 @@ export default function Hero() {
           pointerEvents: isCurrentLayer && transitionProgress < 0.6 ? 'auto' : 'none'
         }}
       >
-        <motion.div className={project.titleMinHeight ?? 'min-h-[220px] md:min-h-[280px] lg:min-h-[320px]'} style={headlineTile}>
-          <motion.h1 className="max-w-[340px] text-[50px] font-semibold leading-[0.9] tracking-[-0.045em] text-brand-black md:max-w-[360px] md:text-[64px] lg:text-[72px]">
+        <motion.div className={project.titleMinHeight ?? 'min-h-[220px] md:min-h-[220px] xl:min-h-[280px] 2xl:min-h-[320px]'} style={headlineTile}>
+          <motion.h1 className="max-w-[340px] text-[50px] font-semibold leading-[0.9] tracking-[-0.045em] text-brand-black md:max-w-[320px] md:text-[52px] lg:text-[58px] xl:max-w-[360px] xl:text-[64px] 2xl:text-[72px]">
             {project.titleLines.map((line) => (
               <span key={line} className="block">
                 {line}
@@ -232,12 +232,12 @@ export default function Hero() {
             ))}
           </motion.h1>
         </motion.div>
-        <motion.div className="mb-5 min-h-[86px] md:min-h-[110px]" style={bodyTile}>
-          <motion.p className="max-w-[360px] text-[15px] leading-8 text-brand-charcoal md:text-base">
+        <motion.div className="mb-4 min-h-[86px] md:min-h-[88px] xl:mb-5 xl:min-h-[110px]" style={bodyTile}>
+          <motion.p className="max-w-[360px] text-[15px] leading-7 text-brand-charcoal md:max-w-[320px] md:text-[15px] md:leading-7 xl:max-w-[360px] xl:text-base xl:leading-8">
             {project.desktopDescription ?? project.description}
           </motion.p>
         </motion.div>
-        <motion.div className="mb-4" style={ctaTile}>
+        <motion.div className="mb-3 xl:mb-4" style={ctaTile}>
           <motion.div
             animate={navigatingTo === project.link ? { scale: 0.94, y: 2 } : { scale: 1, y: 0 }}
             whileTap={navigatingTo === project.link ? undefined : { scale: 0.972, y: 1 }}
@@ -273,13 +273,13 @@ export default function Hero() {
           <div className="h-[1px] flex-1 bg-brand-pearl" />
           <span>{project.accent}</span>
         </motion.div>
-        <motion.div className="mt-auto hidden w-full space-x-8 border-t border-brand-pearl pt-5 md:flex" style={statsTile}>
+        <motion.div className="mt-auto hidden w-full space-x-6 border-t border-brand-pearl pt-4 md:flex xl:space-x-8 xl:pt-5" style={statsTile}>
           <div className="flex flex-col">
-            <span className="text-2xl font-medium text-brand-black">30+</span>
+            <span className="text-[28px] font-medium leading-none text-brand-black xl:text-2xl">30+</span>
             <span className="mt-1 text-[9px] uppercase tracking-widest text-brand-cloud">Years of Excellence</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-2xl font-medium text-brand-black">Thousands</span>
+            <span className="text-[28px] font-medium leading-none text-brand-black xl:text-2xl">Thousands</span>
             <span className="mt-1 text-[9px] uppercase tracking-widest text-brand-cloud">of Happy Families</span>
           </div>
         </motion.div>
