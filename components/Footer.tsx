@@ -52,6 +52,17 @@ export default function Footer() {
           &copy; {new Date().getFullYear()} Suvastu Properties Ltd.
         </div>
         <div className="mt-1 flex flex-col items-center space-y-2 md:mt-0 md:flex-row md:space-x-8 md:space-y-0">
+          <div className="text-[9px] uppercase tracking-widest text-brand-cloud/80">
+            Designed by{' '}
+            <a
+              href="https://grayvally.tech"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand-white transition-colors hover:text-brand-stone"
+            >
+              GrayVally
+            </a>
+          </div>
           <div className="flex items-center space-x-2">
             <span className="w-1 h-1 bg-brand-stone rounded-full animate-pulse"></span>
             <span className="text-[9px] uppercase tracking-widest">Sales Open: Gulshan II</span>
