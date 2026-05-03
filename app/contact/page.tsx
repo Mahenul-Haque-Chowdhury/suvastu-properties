@@ -1,197 +1,202 @@
 'use client';
 
 import { motion } from 'motion/react';
-import { RandomTextReveal } from '@/components/ui/RandomTextReveal';
+import Link from 'next/link';
+import { Check, Clock3, Home, MapPin, ShieldCheck } from 'lucide-react';
+
+const buyerProof = [
+  'Premium projects across Banani, Baridhara, and Gulshan',
+  'Clear route to site visits, brochures, and advisor consultation',
+  'Support for pricing, availability, and shortlist decisions'
+];
+
+const buyerSteps = [
+  {
+    title: 'Share your intent',
+    description: 'Tell us whether you are comparing projects, requesting pricing, or planning a site visit.'
+  },
+  {
+    title: 'Get guided recommendations',
+    description: 'Our advisors align projects, location, and lifestyle fit with your budget and timeline.'
+  },
+  {
+    title: 'Move into a confident decision',
+    description: 'Receive brochure access, next-step guidance, and a direct route to the right conversation.'
+  }
+];
+
+const buyerReasons = [
+  {
+    icon: Home,
+    title: 'Project-first consultation',
+    description: 'Choose from ongoing, upcoming, and completed residences with a clearer fit-based recommendation.'
+  },
+  {
+    icon: MapPin,
+    title: 'Location-led matching',
+    description: 'Compare Dhaka addresses by lifestyle, convenience, and long-term value rather than only price.'
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Brand-backed confidence',
+    description: 'Understand project quality, delivery posture, and what makes each residence distinct before you inquire.'
+  },
+  {
+    icon: Clock3,
+    title: 'Faster next steps',
+    description: 'Move from interest to site visit, brochure request, or advisor conversation without unnecessary friction.'
+  }
+];
 
 export default function ContactPage() {
   return (
-    <div className="bg-white min-h-screen pt-40 md:pt-48 pb-24 px-6 border-b border-brand-pearl overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-16 md:mb-24 flex flex-col md:flex-row items-start justify-between gap-8"
-        >
+    <div className="border-b border-brand-pearl bg-white pt-28 md:pt-32">
+      <section className="border-b border-brand-pearl px-6 pb-16 pt-8 md:px-12 md:pb-24 md:pt-16">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
           <div>
-            <div className="mb-6 flex items-center space-x-3">
-              <div className="w-10 h-[1px] bg-brand-granite"></div>
-              <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Contact With Us</span>
+            <div className="mb-6 flex items-center gap-3">
+              <div className="h-[1px] w-10 bg-brand-granite" />
+              <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Buyer Journey</span>
             </div>
-            <h1 className="text-5xl md:text-[80px] leading-[0.9] font-light tracking-tight text-brand-black">
-              Customer <br className="hidden md:block" /> Service.
-            </h1>
-          </div>
-          <div className="md:text-right mt-6 md:mt-auto hidden md:block">
-            <p className="text-[9px] uppercase tracking-[0.2em] text-brand-granite">Our experts are waiting for you</p>
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 relative">
-          
-          <div className="lg:col-span-7 space-y-24">
-            {/* Customer Service Section */}
-            <motion.section
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10%" }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="max-w-4xl text-[38px] font-semibold leading-[0.95] tracking-[-0.05em] text-brand-black sm:text-5xl md:text-[78px]"
             >
-              <h2 className="text-3xl font-light tracking-tight mb-8">Dear Customer,</h2>
-              <p className="text-brand-charcoal text-sm leading-relaxed mb-12 max-w-xl">
-                At Suvastu Properties Ltd., the journey towards your dream home begins. Our dedicated team is here to assist you at every step, ensuring a smooth and personalized experience. Reach out to us for expert guidance, tailored solutions, and a seamless journey to purchase your perfect home. Contact us today.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 border-t border-brand-pearl pt-10">
-                <div className="group cursor-pointer">
-                  <span className="block text-[9px] uppercase tracking-[0.2em] text-brand-granite mb-3">Head Office Front Desk</span>
-                  <a href="tel:+8802226601310" className="text-2xl md:text-3xl font-light text-brand-black group-hover:text-brand-granite transition-colors inline-block">+880 2226 601 310</a>
-                </div>
-                <div className="group cursor-pointer">
-                  <span className="block text-[9px] uppercase tracking-[0.2em] text-brand-granite mb-3">International Call</span>
-                  <a href="tel:+8809639500400" className="text-2xl md:text-3xl font-light text-brand-black group-hover:text-brand-granite transition-colors inline-block">+880 9639 500 400</a>
-                </div>
-                <div className="group cursor-pointer sm:col-span-2 mt-4">
-                  <span className="block text-[9px] uppercase tracking-[0.2em] text-brand-granite mb-3">Contact through E-mail</span>
-                  <a href="mailto:marketing@suvastu.com" className="text-2xl md:text-3xl font-light text-brand-black group-hover:text-brand-granite transition-colors inline-block pb-2 border-b border-transparent group-hover:border-brand-granite">marketing@suvastu.com</a>
-                </div>
-              </div>
-            </motion.section>
-
-            {/* After-Sales Service Section */}
-            <motion.section
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10%" }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              className="border-t border-brand-pearl pt-16"
+              Find the right Suvastu address with a clearer path to inquiry.
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-8 max-w-2xl text-[15px] leading-8 text-brand-charcoal md:text-base"
             >
-              <div className="mb-6 flex items-center space-x-3">
-                <span className="w-1.5 h-1.5 bg-brand-black rounded-full"></span>
-                <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Beyond Purchase</span>
-              </div>
-              <h2 className="text-3xl md:text-[40px] leading-[1.1] font-light tracking-tight mb-10 text-brand-black">Premier Real Estate Developer | Suvastu</h2>
-              <div className="space-y-6 text-brand-charcoal text-sm leading-loose max-w-2xl">
-                <p>
-                  Welcome to Suvastu Properties Ltd., where our commitment to your satisfaction goes beyond your property purchase. Our after-sales service team is dedicated to providing you with a seamless and stress-free experience long after you’ve settled into your new home. We understand that your peace of mind is essential, and that’s why we offer comprehensive maintenance solutions, ensuring your property remains in pristine condition. Our experts are always on hand to address your concerns, promptly resolving any issues that may arise.
-                </p>
-                <p>
-                  At Suvastu Properties Ltd., we believe that your home should be a sanctuary where you can thrive, surrounded by comfort and convenience. Our after-sales service goes the extra mile to make your living experience truly exceptional. We take pride in fostering lasting relationships with our homeowners, building trust through our reliable assistance and personalized care. Choose Suvastu for a home that comes with dedicated support every step of the way. Your satisfaction is our priority, and we are here to make your living experience at Suvastu truly unforgettable.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-                <motion.div 
-                  whileHover={{ y: -5 }}
-                  className="bg-brand-pearl p-8 border-l-4 border-brand-black transition-all cursor-pointer group"
-                >
-                  <a href="mailto:crm@suvastu.com" className="text-xl md:text-2xl font-light text-brand-black group-hover:opacity-60 transition-opacity block mb-4">crm@suvastu.com</a>
-                  <span className="block text-[9px] uppercase tracking-[0.2em] text-brand-granite leading-relaxed">Reach our Dedicated Customer Care Experts through E-mail</span>
-                </motion.div>
-                <motion.div 
-                  whileHover={{ y: -5 }}
-                  className="bg-brand-pearl p-8 border-l-4 border-brand-black transition-all cursor-pointer group"
-                >
-                  <a href="mailto:pm@suvastu.com" className="text-xl md:text-2xl font-light text-brand-black group-hover:opacity-60 transition-opacity block mb-4">pm@suvastu.com</a>
-                  <span className="block text-[9px] uppercase tracking-[0.2em] text-brand-granite leading-relaxed">Reach our Expert Project Managers through E-mail</span>
-                </motion.div>
-              </div>
-            </motion.section>
-
-            {/* Landowners Section */}
-            <motion.section
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10%" }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              className="border-t border-brand-pearl pt-16"
-            >
-              <div className="mb-6 flex items-center space-x-3">
-                <span className="w-1.5 h-1.5 bg-brand-black rounded-full"></span>
-                <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">For Landowners</span>
-              </div>
-              
-              <RandomTextReveal 
-                text="Witness, As We Transform Your Land to a Landmark" 
-                className="text-3xl md:text-[40px] leading-[1.2] font-normal tracking-tight mb-8 text-brand-black max-w-xl"
-              />
-              
-              <p className="text-brand-charcoal text-sm leading-relaxed mb-10 max-w-xl">
-                We understand the value of your property. Partner with Suvastu to transform your land into an iconic architectural landmark, ensuring a mutually rewarding relationship built on trust and excellence.
-              </p>
-
-              <div className="group cursor-pointer">
-                <span className="block text-[9px] uppercase tracking-[0.2em] text-brand-granite mb-3">Joint Venture Inquiry</span>
-                <a href="mailto:jv@suvastu.com" className="text-2xl md:text-3xl font-light text-brand-black group-hover:text-brand-granite transition-colors inline-block pb-2 border-b border-transparent group-hover:border-brand-granite">jv@suvastu.com</a>
-              </div>
-
-              <div className="rounded-[28px] border border-brand-stone/70 bg-brand-pearl/45 p-8">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="h-[1px] w-10 bg-brand-granite" />
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-granite">Landowner Route</span>
+              This page is designed for buyers who want more than a generic contact form. Use it to move from project interest to site visits, brochure requests, availability questions, and a better-qualified conversation with the Suvastu team.
+            </motion.p>
+            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+              {buyerProof.map((item) => (
+                <div key={item} className="rounded-[20px] border border-brand-pearl bg-brand-pearl/35 p-5">
+                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-full border border-brand-black text-brand-black">
+                    <Check size={16} />
+                  </div>
+                  <p className="text-[14px] leading-6 text-brand-charcoal">{item}</p>
                 </div>
-                <h3 className="mb-4 text-[28px] font-semibold leading-[1.05] tracking-[-0.03em] text-brand-black">
-                  Looking for the dedicated landowner form?
-                </h3>
-                <p className="mb-6 max-w-xl text-[15px] leading-7 text-brand-charcoal">
-                  Use the landowner journey to share land details, preferred location, and partnership intent with the right team.
-                </p>
-                <a href="/landowners#landowner-form" className="inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-black transition-colors hover:text-brand-granite">
-                  Go to Landowner Form
-                  <span>→</span>
-                </a>
-              </div>
-            </motion.section>
+              ))}
+            </div>
           </div>
 
-          <div className="lg:col-span-5 relative mt-16 md:mt-24 lg:mt-0">
-            <motion.div 
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              id="buyer-form"
-              className="lg:sticky lg:top-32 bg-brand-pearl p-8 md:p-10 border-[8px] md:border-[12px] border-white shadow-sm"
-            >
-              <div className="mb-10 border-b border-brand-stone pb-6">
-                <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-granite">Buyer Form</p>
-                <h3 className="text-3xl font-light tracking-tight text-brand-black mb-2">Book a Visit or Speak to an Advisor</h3>
-                <p className="text-[9px] uppercase tracking-[0.2em] text-brand-granite">Buyer consultations and project inquiries</p>
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+            id="buyer-form"
+            className="rounded-[28px] border border-brand-pearl bg-[linear-gradient(180deg,rgba(230,234,237,0.62),rgba(255,255,255,0.95))] p-6 shadow-[0_20px_56px_rgba(27,33,39,0.08)] md:p-10 lg:sticky lg:top-32"
+          >
+            <div className="mb-8 border-b border-brand-stone pb-6">
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-granite">Buyer Inquiry Form</p>
+              <h2 className="mb-2 text-[30px] font-semibold leading-[1.02] tracking-[-0.04em] text-brand-black md:text-[36px]">
+                Book a visit or speak to an advisor
+              </h2>
+              <p className="text-[11px] uppercase tracking-[0.2em] text-brand-granite">For project comparisons, pricing, brochures, and site visits</p>
+            </div>
+            <form className="space-y-7 text-left">
+              <div>
+                <label className="mb-2 block text-[9px] uppercase tracking-[0.2em] text-brand-granite">Name</label>
+                <input type="text" className="w-full border-b border-brand-granite bg-transparent py-2 text-sm text-brand-black transition-colors focus:border-brand-black focus:outline-none" placeholder="Your full name" />
               </div>
-              <form className="space-y-8 text-left">
-                <div>
-                  <label className="block text-[9px] uppercase tracking-[0.2em] text-brand-granite mb-2">Name</label>
-                  <input type="text" className="w-full border-b border-brand-granite py-2 focus:outline-none focus:border-brand-black bg-transparent transition-colors text-sm text-brand-black" placeholder="John Doe" />
-                </div>
-                <div>
-                  <label className="block text-[9px] uppercase tracking-[0.2em] text-brand-granite mb-2">Phone</label>
-                  <input type="tel" className="w-full border-b border-brand-granite py-2 focus:outline-none focus:border-brand-black bg-transparent transition-colors text-sm text-brand-black" placeholder="+880 123 456 7890" />
-                </div>
-                <div>
-                  <label className="block text-[9px] uppercase tracking-[0.2em] text-brand-granite mb-2">Preferred Project</label>
-                  <input type="text" className="w-full border-b border-brand-granite py-2 focus:outline-none focus:border-brand-black bg-transparent transition-colors text-sm text-brand-black" placeholder="Suvastu Shaptarshi" />
-                </div>
-                <div>
-                  <label className="block text-[9px] uppercase tracking-[0.2em] text-brand-granite mb-2">Visit or Inquiry Type</label>
-                  <select className="w-full border-b border-brand-granite py-2 focus:outline-none focus:border-brand-black bg-transparent transition-colors text-sm text-brand-black">
-                    <option>Book a Site Visit</option>
-                    <option>Pricing Inquiry</option>
-                    <option>Availability Inquiry</option>
-                    <option>General Consultation</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[9px] uppercase tracking-[0.2em] text-brand-granite mb-2">Message</label>
-                  <textarea className="w-full border-b border-brand-granite py-2 focus:outline-none focus:border-brand-black bg-transparent transition-colors text-sm text-brand-black resize-none h-24" placeholder="Tell us what kind of residence or visit you are interested in."></textarea>
-                </div>
-                <button type="button" className="w-full border border-brand-black bg-brand-black text-white py-5 uppercase tracking-[0.2em] text-[10px] font-bold hover:bg-transparent hover:text-brand-black transition-colors mt-6">
-                  Submit Buyer Inquiry
-                </button>
-              </form>
-            </motion.div>
-          </div>
-          
+              <div>
+                <label className="mb-2 block text-[9px] uppercase tracking-[0.2em] text-brand-granite">Phone</label>
+                <input type="tel" className="w-full border-b border-brand-granite bg-transparent py-2 text-sm text-brand-black transition-colors focus:border-brand-black focus:outline-none" placeholder="+880 123 456 7890" />
+              </div>
+              <div>
+                <label className="mb-2 block text-[9px] uppercase tracking-[0.2em] text-brand-granite">Preferred Project</label>
+                <input type="text" className="w-full border-b border-brand-granite bg-transparent py-2 text-sm text-brand-black transition-colors focus:border-brand-black focus:outline-none" placeholder="Suvastu Shaptarshi" />
+              </div>
+              <div>
+                <label className="mb-2 block text-[9px] uppercase tracking-[0.2em] text-brand-granite">Inquiry Type</label>
+                <select className="w-full border-b border-brand-granite bg-transparent py-2 text-sm text-brand-black transition-colors focus:border-brand-black focus:outline-none">
+                  <option>Book a Site Visit</option>
+                  <option>Pricing Inquiry</option>
+                  <option>Availability Inquiry</option>
+                  <option>Request Brochure</option>
+                  <option>General Consultation</option>
+                </select>
+              </div>
+              <div>
+                <label className="mb-2 block text-[9px] uppercase tracking-[0.2em] text-brand-granite">Message</label>
+                <textarea className="h-24 w-full resize-none border-b border-brand-granite bg-transparent py-2 text-sm text-brand-black transition-colors focus:border-brand-black focus:outline-none" placeholder="Tell us what kind of project, budget range, or site visit you are considering." />
+              </div>
+              <button type="button" className="mt-4 w-full border border-brand-black bg-brand-black py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-white transition-colors hover:bg-transparent hover:text-brand-black">
+                Submit Buyer Inquiry
+              </button>
+            </form>
+          </motion.div>
         </div>
-      </div>
+      </section>
+
+      <section className="border-b border-brand-pearl px-6 py-16 md:px-12 md:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 flex items-center gap-3">
+            <div className="h-[1px] w-10 bg-brand-granite" />
+            <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">What Happens Next</span>
+          </div>
+          <div className="grid gap-5 md:grid-cols-3">
+            {buyerSteps.map((step, index) => (
+              <div key={step.title} className="rounded-[24px] border border-brand-pearl bg-white p-6 shadow-[0_16px_40px_rgba(27,33,39,0.04)] md:p-7">
+                <div className="mb-4 text-[10px] font-semibold uppercase tracking-[0.26em] text-brand-granite">0{index + 1}</div>
+                <h3 className="mb-4 text-[24px] font-semibold leading-[1.05] tracking-[-0.035em] text-brand-black">{step.title}</h3>
+                <p className="text-[15px] leading-7 text-brand-charcoal">{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-16 md:px-12 md:py-24">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-16">
+          <div>
+            <div className="mb-5 flex items-center gap-3">
+              <div className="h-[1px] w-10 bg-brand-granite" />
+              <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Why This Route Converts Better</span>
+            </div>
+            <h2 className="text-[32px] font-semibold leading-[1.02] tracking-[-0.04em] text-brand-black md:text-[54px]">
+              A buyer landing page built around decision support, not just contact details.
+            </h2>
+            <p className="mt-6 max-w-xl text-[15px] leading-8 text-brand-charcoal md:text-base">
+              Performance campaigns need a clearer promise, lower friction, and stronger next-step confidence. This buyer route is designed to turn interest into qualified action.
+            </p>
+          </div>
+          <div className="grid gap-5 md:grid-cols-2">
+            {buyerReasons.map((reason) => {
+              const Icon = reason.icon;
+              return (
+                <div key={reason.title} className="rounded-[24px] border border-brand-pearl bg-brand-pearl/28 p-6 md:p-7">
+                  <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full border border-brand-black text-brand-black">
+                    <Icon size={20} />
+                  </div>
+                  <h3 className="mb-3 text-[22px] font-semibold leading-[1.05] tracking-[-0.03em] text-brand-black">{reason.title}</h3>
+                  <p className="text-[15px] leading-7 text-brand-charcoal">{reason.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="mx-auto mt-14 max-w-7xl rounded-[28px] border border-brand-pearl bg-brand-black px-7 py-8 text-brand-pearl md:px-10 md:py-10">
+          <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.26em] text-brand-cloud">Need the landowner path instead?</p>
+              <h3 className="text-[28px] font-semibold leading-[1.04] tracking-[-0.04em] text-brand-white md:text-[34px]">
+                Start the dedicated landowner conversation with the right team.
+              </h3>
+            </div>
+            <Link href="/landowners#landowner-form" className="inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-white">
+              Go to Landowner Journey
+              <span>→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

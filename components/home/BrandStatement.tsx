@@ -17,13 +17,14 @@ export default function BrandStatement() {
   const lineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const containerEl = containerRef.current;
     const textEl = textRef.current;
-    if (!containerRef.current || !textEl || !lineRef.current) return;
+    if (!containerEl || !textEl || !lineRef.current) return;
 
     gsap.fromTo(lineRef.current, 
       { scaleX: 0, transformOrigin: 'left' },
       { scaleX: 1, duration: 1, ease: 'power3.out', scrollTrigger: {
-        trigger: containerRef.current,
+        trigger: containerEl,
         start: 'top 80%',
       }}
     );
@@ -39,7 +40,7 @@ export default function BrandStatement() {
       stagger: 0.1,
       ease: 'none',
       scrollTrigger: {
-        trigger: containerRef.current,
+        trigger: containerEl,
         start: 'top 80%',
         end: 'center center',
         scrub: 1,
@@ -48,7 +49,7 @@ export default function BrandStatement() {
 
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => {
-        if (trigger.trigger === containerRef.current) {
+        if (trigger.trigger === containerEl) {
           trigger.kill();
         }
       });

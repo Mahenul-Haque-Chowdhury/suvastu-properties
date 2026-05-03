@@ -6,6 +6,7 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,14 +22,21 @@ const projects = [
 ];
 
 export default function FeaturedProjects() {
+  const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
+    if (isMobile) return;
     if (!triggerRef.current || !containerRef.current) return;
 
-    const sections = gsap.utils.toArray('.project-card');
-    const images = gsap.utils.toArray('.project-image');
+    const images = gsap.utils.toArray('.project-image', triggerRef.current);
+    const horizontalDistance = Math.max(
+      containerRef.current.scrollWidth - triggerRef.current.clientWidth,
+      0,
+    );
+
+    if (horizontalDistance <= 0) return;
     
     // Set initial scale for inner image parallax to prevent showing edges
     gsap.set(images, { scale: 1.2, xPercent: -10 });
@@ -72,13 +80,16 @@ export default function FeaturedProjects() {
         trigger: triggerRef.current,
         pin: true,
         scrub: 1,
-        // snap: 1 / (sections.length - 1),
-        end: () => "+=" + (containerRef.current?.scrollWidth || 0)
+        invalidateOnRefresh: true,
+        end: () => "+=" + Math.max(
+          (containerRef.current?.scrollWidth || 0) - (triggerRef.current?.clientWidth || 0),
+          0,
+        ),
       }
     });
 
-    tl.to(sections, {
-      xPercent: -100 * (sections.length - 1),
+    tl.to(containerRef.current, {
+      x: -horizontalDistance,
       ease: "none",
     }, 0);
     
@@ -88,7 +99,7 @@ export default function FeaturedProjects() {
       ease: "none",
     }, 0);
 
-  }, { scope: triggerRef });
+  }, { scope: triggerRef, dependencies: [isMobile] });
 
   return (
     <section ref={triggerRef} className="bg-white py-24 md:py-32 overflow-hidden border-b border-brand-pearl">
@@ -98,8 +109,8 @@ export default function FeaturedProjects() {
             <div className="w-10 h-[1px] bg-brand-granite"></div>
             <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Portfolio</span>
           </div>
-          <h2 className="projects-title mb-3 text-[44px] font-semibold leading-[0.96] tracking-[-0.04em] text-brand-black md:text-[64px]">Featured Projects</h2>
-          <p className="projects-description max-w-none text-[15px] leading-7 text-brand-charcoal whitespace-nowrap md:text-base">Symphonies of architecture and nature, designed to elevate your everyday.</p>
+          <h2 className="projects-title mb-3 whitespace-nowrap text-[44px] font-semibold leading-[0.96] tracking-[-0.04em] text-brand-black md:text-[64px]">Featured Projects</h2>
+          <p className="projects-description max-w-[22rem] text-[15px] leading-7 text-brand-charcoal line-clamp-2 md:max-w-none md:text-base md:line-clamp-none md:whitespace-nowrap">Symphonies of architecture and nature, designed to elevate your everyday.</p>
         </div>
         <div className="projects-link hidden md:block">
           <Link href="/projects" className="text-[10px] font-medium tracking-[0.2em] uppercase border-b border-brand-black pb-1 hover:text-brand-granite hover:border-brand-granite transition-colors">
@@ -108,19 +119,46 @@ export default function FeaturedProjects() {
         </div>
       </div>
 
+      {isMobile ? (
+        <div className="grid gap-5 px-6 pb-4 pt-2">
+          {projects.slice(0, 4).map((project) => (
+            <Link key={project.id} href={`/projects/${project.id}`} className="group overflow-hidden rounded-[24px] border border-brand-pearl bg-white shadow-[0_16px_34px_rgba(27,33,39,0.08)]">
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-brand-pearl">
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  sizes="100vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-black/88 via-brand-black/18 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-5">
+                  <span className="mb-2 block text-[9px] uppercase tracking-[0.3em] text-brand-cloud">{project.category}</span>
+                  <h3 className="max-w-[11ch] text-[30px] font-semibold leading-[1.02] tracking-[-0.035em] text-white">{project.title}</h3>
+                  <div className="mt-4 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.24em] text-white">
+                    Discover <span>→</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      ) : (
       <div className="relative flex min-h-[72vh] items-start overflow-x-hidden overflow-y-visible pt-0 pb-8 md:min-h-[78vh] md:pt-0 md:pb-10">
         <div
           ref={containerRef}
           className="absolute left-0 top-0 flex h-[62vh] gap-8 px-6 lg:px-12 md:h-[66vh]"
-          style={{ width: `calc(8vw + 400px * ${projects.length})` }}
+          style={{ width: `max-content` }}
         >
           {projects.map((project) => (
             <div key={project.id} className="project-card relative h-full w-[75vw] flex-shrink-0 group overflow-hidden bg-brand-pearl shadow-[0_16px_34px_rgba(27,33,39,0.08)] sm:w-[400px]">
-              <div className="w-full h-full overflow-hidden">
+              <div className="relative h-full w-full overflow-hidden">
                 <Image 
                   src={project.image} 
                   alt={project.title} 
                   fill 
+                  sizes="(max-width: 640px) 75vw, 400px"
                   className="project-image object-cover"
                   referrerPolicy="no-referrer"
                 />
@@ -140,6 +178,7 @@ export default function FeaturedProjects() {
           ))}
         </div>
       </div>
+      )}
       
       <div className="px-6 lg:px-12 mt-12 md:hidden">
         <Link href="/projects" className="text-[10px] font-medium tracking-[0.2em] uppercase border-b border-brand-black pb-1 hover:text-brand-granite hover:border-brand-granite transition-colors inline-block">

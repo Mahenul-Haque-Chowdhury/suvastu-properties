@@ -16,8 +16,15 @@
 }
 
 @layer base {
+  html {
+    overflow-x: hidden;
+    position: relative;
+  }
+
   body {
     @apply bg-background text-foreground font-sans selection:bg-brand-stone selection:text-brand-black;
+    overflow-x: hidden;
+    position: relative;
   }
 }
 

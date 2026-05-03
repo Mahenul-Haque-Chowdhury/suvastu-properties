@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function Footer() {
   return (
     <footer className="w-full bg-brand-black text-brand-white">
-      <div className="py-20 px-6 lg:px-12 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-14 md:grid-cols-2 md:gap-12 md:py-20 lg:px-12 lg:grid-cols-4">
         <div className="space-y-6">
           <Link href="/" className="flex items-baseline space-x-1">
             <span className="text-2xl font-bold tracking-tighter uppercase">Suvastu</span>
@@ -47,11 +47,11 @@ export default function Footer() {
       </div>
       
       {/* Bottom Editorial Bar */}
-      <div className="h-12 w-full border-t border-brand-charcoal flex flex-col md:flex-row items-center justify-between px-6 lg:px-12 z-50">
+      <div className="z-50 flex w-full flex-col items-center justify-between gap-3 border-t border-brand-charcoal px-6 py-4 text-center md:flex-row md:gap-0 md:text-left lg:px-12">
         <div className="text-[9px] uppercase tracking-[0.2em] opacity-60">
           &copy; {new Date().getFullYear()} Suvastu Properties Ltd.
         </div>
-        <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-8 mt-2 md:mt-0">
+        <div className="mt-1 flex flex-col items-center space-y-2 md:mt-0 md:flex-row md:space-x-8 md:space-y-0">
           <div className="flex items-center space-x-2">
             <span className="w-1 h-1 bg-brand-stone rounded-full animate-pulse"></span>
             <span className="text-[9px] uppercase tracking-widest">Sales Open: Gulshan II</span>

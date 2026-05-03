@@ -28,13 +28,13 @@ export default function AboutPage() {
 
   return (
     <div className="bg-white border-b border-brand-pearl">
-      <section className="px-6 pb-20 pt-40 md:px-12 md:pb-24 md:pt-48">
+      <section className="px-6 pb-16 pt-32 md:px-12 md:pb-24 md:pt-48">
         <div className="mx-auto max-w-7xl">
           <div className="mb-6 flex items-center space-x-3">
             <div className="h-[1px] w-10 bg-brand-granite"></div>
             <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">The Brand</span>
           </div>
-          <h1 className="max-w-5xl text-5xl font-semibold leading-[0.95] tracking-[-0.05em] text-brand-black md:text-[80px]">
+          <h1 className="max-w-5xl text-[40px] font-semibold leading-[0.98] tracking-[-0.05em] text-brand-black sm:text-5xl md:text-[80px]">
             Building legacies through wellness, trust, and timeless living.
           </h1>
           <p className="mt-8 max-w-3xl text-[15px] leading-8 text-brand-charcoal md:text-base">
@@ -48,14 +48,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section id="our-story" className="border-t border-brand-pearl px-6 py-20 md:px-12 md:py-24">
+      <section id="our-story" className="border-t border-brand-pearl px-6 py-16 md:px-12 md:py-24">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-16">
           <div>
             <div className="mb-5 flex items-center space-x-3">
               <div className="h-[1px] w-10 bg-brand-granite"></div>
               <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Our Story</span>
             </div>
-            <h2 className="text-[36px] font-semibold leading-[1] tracking-[-0.04em] text-brand-black md:text-[52px]">
+            <h2 className="text-[30px] font-semibold leading-[1.04] tracking-[-0.04em] text-brand-black md:text-[52px]">
               A real estate journey rooted in meaning.
             </h2>
           </div>
@@ -70,7 +70,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section id="leadership" className="border-t border-brand-pearl bg-brand-pearl/45 px-6 py-20 md:px-12 md:py-24">
+      <section id="leadership" className="border-t border-brand-pearl bg-brand-pearl/45 px-6 py-16 md:px-12 md:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
@@ -78,7 +78,7 @@ export default function AboutPage() {
                 <div className="h-[1px] w-10 bg-brand-granite"></div>
                 <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Leadership</span>
               </div>
-              <h2 className="text-[36px] font-semibold leading-[1] tracking-[-0.04em] text-brand-black md:text-[52px]">
+              <h2 className="text-[30px] font-semibold leading-[1.04] tracking-[-0.04em] text-brand-black md:text-[52px]">
                 Leadership with long-term conviction.
               </h2>
             </div>
@@ -87,11 +87,11 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-3 md:gap-6">
             {leaders.map((leader) => (
-              <div key={leader.name} className="rounded-[28px] border border-brand-stone/60 bg-brand-white p-8 shadow-[0_14px_36px_rgba(27,33,39,0.06)]">
+              <div key={leader.name} className="rounded-[24px] border border-brand-stone/60 bg-brand-white p-6 shadow-[0_14px_36px_rgba(27,33,39,0.06)] md:rounded-[28px] md:p-8">
                 <div className="mb-4 text-[10px] font-semibold uppercase tracking-[0.26em] text-brand-granite">{leader.role}</div>
-                <h3 className="mb-4 text-[28px] font-semibold leading-[1.02] tracking-[-0.03em] text-brand-black">{leader.name}</h3>
+                <h3 className="mb-4 text-[24px] font-semibold leading-[1.02] tracking-[-0.03em] text-brand-black md:text-[28px]">{leader.name}</h3>
                 <p className="text-[15px] leading-7 text-brand-charcoal">{leader.note}</p>
               </div>
             ))}
@@ -99,14 +99,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section id="why-us" className="border-t border-brand-pearl px-6 py-20 md:px-12 md:py-24">
+      <section id="why-us" className="border-t border-brand-pearl px-6 py-16 md:px-12 md:py-24">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
           <div>
             <div className="mb-5 flex items-center space-x-3">
               <div className="h-[1px] w-10 bg-brand-granite"></div>
               <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Why Us</span>
             </div>
-            <h2 className="text-[36px] font-semibold leading-[1] tracking-[-0.04em] text-brand-black md:text-[52px]">
+            <h2 className="text-[30px] font-semibold leading-[1.04] tracking-[-0.04em] text-brand-black md:text-[52px]">
               Why homeowners and landowners choose Suvastu.
             </h2>
           </div>

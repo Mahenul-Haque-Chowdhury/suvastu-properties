@@ -1,63 +1,69 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, useMotionValueEvent, useScroll, useSpring, useTransform } from 'motion/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const heroProjects = [
   {
-    eyebrow: 'Refined Living',
-    headline: 'Elevated',
-    subhead: 'Spaces.',
-    description:
-      "Architectural precision meets artisanal luxury. We craft environments that redefine the essence of home in Dhaka's most coveted skylines.",
-    image: '/Shoptorshi.png?v=2',
+    eyebrow: 'Suvastu Shaptarshi',
+    titleLines: ['Wellness', 'and Luxury'],
+    titleMinHeight: 'min-h-[155px] md:min-h-[190px] lg:min-h-[220px]',
+    description: 'A wellness-led Banani address designed to help you return to yourself in everyday city life.',
+    desktopDescription:
+      'Strategically located at Block-H, Road-07, Banani, Suvastu Shaptarshi is set to be your ideal abode to rejuvenate your mind and soul! It is designed to be your ideal home where you can unwind and focus on the true values of your life. It is a home where you Return to Yourself!',
+    image: '/Shoptorshi.png',
     projectName: 'Suvastu Shaptarshi',
     projectDesc:
-      'A wholesome blend of wellness and luxury. Experience the height of contemporary minimalism in Dhaka.',
+      'A wholesome blend of wellness and luxury.',
     link: '/projects/suvastu-shaptarshi',
     index: '01',
-    accent: 'Skyline Residence'
+    accent: 'Return to Yourself'
   },
   {
-    eyebrow: 'Wellness Edition',
-    headline: 'Wellness &',
-    subhead: 'Luxury.',
-    description:
-      'Experience the pinnacle of wellness integration where every breath you take inside your home is a breath of fresh air.',
-    image: '/florentina.jpg?v=2',
+    eyebrow: 'Suvastu Florentina',
+    titleLines: ['Life of', 'Wellness'],
+    titleMinHeight: 'min-h-[145px] md:min-h-[180px] lg:min-h-[210px]',
+    description: 'A graceful residence shaped around harmony, warmth, and a more elevated life of wellness.',
+    desktopDescription:
+      'The name “Florentina” is reminiscent of the iconic city of Florence, Italy. And just like the city, Florentina tells a story of harmony in our designs, meticulousness in our works, and grace in every detail. Florentina extends a warm embrace to all and promises a life of wellness.',
+    image: '/florentina.jpg',
     projectName: 'Suvastu Florentina',
-    projectDesc: 'Inviting you to a life of wellness. Natural light and biophilic design harmonized.',
+    projectDesc: 'Inviting you to a life of wellness.',
     link: '/projects/suvastu-florentina',
     index: '02',
-    accent: 'Light-Filled Address'
+    accent: 'Harmony in Every Detail'
   },
   {
-    eyebrow: 'Urban Nature',
-    headline: 'Symphony of',
-    subhead: 'Elegance.',
-    description:
-      'We build homes that are a symphony of elegance. Integrating lush landscapes with urban sophistication.',
+    eyebrow: 'Suvastu Mirambeena',
+    titleLines: ['A Symphony', 'of Welcome'],
+    titleMinHeight: 'min-h-[220px] md:min-h-[280px] lg:min-h-[320px]',
+    description: 'A Banani residence where luxury, convenience, and investment value come together clearly.',
+    desktopDescription:
+      'Suvastu Mirambeena is where luxury meets convenience and offers real estate investment opportunities. It’s your ticket to modern urban living in Dhaka, making it one of the top choices for residential properties in Dhaka.',
     image: '/mirambeenacover.png',
     projectName: 'Suvastu Mirambeena',
-    projectDesc: 'A symphony of elegance in Banani. A visual marvel against the Dhaka skyline.',
+    projectDesc: 'A symphony of welcome.',
     link: '/projects/suvastu-mirambeena',
     index: '03',
-    accent: 'Garden Overlook'
+    accent: 'Luxury Meets Convenience'
   },
   {
-    eyebrow: 'Signature Living',
-    headline: 'Celebrate',
-    subhead: 'Life.',
-    description:
-      'Saleha Suvastu brings your dream home to reality where every architectural detail is meticulously designed.',
+    eyebrow: 'Saleha Suvastu',
+    titleLines: ['Dream Home', 'Where You', 'Celebrate'],
+    titleMinHeight: 'min-h-[220px] md:min-h-[280px] lg:min-h-[320px]',
+    description: 'An eco-conscious Gulshan residence that brings modern luxury and everyday celebration together.',
+    desktopDescription:
+      'Discover eco-friendly apartments with modern and luxurious facilities in the heart of Gulshan. Saleha Suvastu is your gateway to the finest real estate deal in Dhaka, offered by Suvastu Properties Ltd.',
     image: '/saleha.jpg',
     projectName: 'Saleha Suvastu',
-    projectDesc: 'Your dream home where life is celebrated. Heritage meets modern luxury.',
+    projectDesc: 'Your dream home where life is celebrated.',
     link: '/projects/saleha-suvastu',
     index: '04',
-    accent: 'Private Club Living'
+    accent: 'Eco-Luxury in Gulshan'
   }
 ];
 
@@ -83,13 +89,19 @@ function getTransitionState(progress: number, totalSlides: number) {
 }
 
 export default function Hero() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const isMobile = useIsMobile();
+  const desktopContainerRef = useRef<HTMLDivElement>(null);
+  const mobileContainerRef = useRef<HTMLDivElement>(null);
+  const navigationTimeoutRef = useRef<number | null>(null);
   const [transitionState, setTransitionState] = useState({
     currentIndex: 0,
     nextIndex: 1,
     transitionProgress: 0
   });
   const [hasEntered, setHasEntered] = useState(false);
+  const [isPinned, setIsPinned] = useState(true);
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
@@ -98,11 +110,40 @@ export default function Hero() {
 
     return () => {
       window.cancelAnimationFrame(frameId);
+
+      if (navigationTimeoutRef.current !== null) {
+        window.clearTimeout(navigationTimeoutRef.current);
+      }
     };
   }, []);
 
+  function handleExploreClick(event: MouseEvent<HTMLAnchorElement>, href: string) {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (navigationTimeoutRef.current !== null) {
+      window.clearTimeout(navigationTimeoutRef.current);
+    }
+
+    setNavigatingTo(href);
+
+    navigationTimeoutRef.current = window.setTimeout(() => {
+      router.push(href);
+    }, 240);
+  }
+
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: isMobile ? mobileContainerRef : desktopContainerRef,
     offset: ['start start', 'end end']
   });
 
@@ -117,7 +158,15 @@ export default function Hero() {
   const imageY = useTransform(smoothProgress, [0, 1], ['0%', '-2.2%']);
 
   useMotionValueEvent(smoothProgress, 'change', (latest) => {
-    setTransitionState(getTransitionState(latest, heroProjects.length));
+    const responsiveProgress = isMobile
+      ? clamp(latest * 1.18, 0, 0.9999)
+      : latest;
+
+    setTransitionState(getTransitionState(responsiveProgress, heroProjects.length));
+  });
+
+  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+    setIsPinned(latest < 0.999);
   });
 
   const currentProject = heroProjects[transitionState.currentIndex];
@@ -126,12 +175,12 @@ export default function Hero() {
   const currentOpacity = 1 - clamp(transitionProgress * 1.75, 0, 1);
   const nextOpacity = clamp((transitionProgress - 0.34) / 0.66, 0, 1);
   const currentImageOpacity = 1;
-  const nextImageOpacity = clamp((transitionProgress - 0.12) / 0.88, 0, 1);
+  const nextImageOpacity = 0.26 + clamp((transitionProgress - 0.18) / 0.82, 0, 1) * 0.74;
   const currentTranslateY = -26 * transitionProgress;
   const nextTranslateY = 40 * (1 - transitionProgress);
   const currentImageTranslateY = 0;
-  const nextImageTranslateY = 30 * (1 - transitionProgress);
-  const revealRadius = `${transitionProgress * 180}%`;
+  const nextImageTranslateY = 20 * (1 - transitionProgress);
+  const revealRadius = `${32 + transitionProgress * 138}%`;
   const revealClipPath = `circle(${revealRadius} at 100% 0%)`;
   const imageOverlay = 'linear-gradient(180deg, rgba(83,90,95,0.42), rgba(27,33,39,0.68))';
   const imageBottomOverlay = 'linear-gradient(to top, rgba(27,33,39,0.72), rgba(27,33,39,0.28), rgba(27,33,39,0))';
@@ -158,7 +207,6 @@ export default function Hero() {
 
   function renderCopyPanel(project: (typeof heroProjects)[number], layer: 'current' | 'next') {
     const isCurrentLayer = layer === 'current';
-    const eyebrowTile = getTileMotion(layer, 0.02, 18);
     const headlineTile = getTileMotion(layer, 0.1, 28);
     const bodyTile = getTileMotion(layer, 0.18, 22);
     const ctaTile = getTileMotion(layer, 0.24, 18);
@@ -167,7 +215,7 @@ export default function Hero() {
     return (
       <motion.div
         key={`${project.projectName}-${layer}-copy`}
-        className="absolute inset-0 flex h-full w-full flex-col justify-center px-8 pb-8 pt-28 md:px-12 md:pb-12 md:pt-32"
+        className="absolute inset-0 flex h-full w-full flex-col justify-center px-8 pb-6 pt-24 md:px-12 md:pb-10 md:pt-28"
         initial={false}
         style={{
           opacity: 1,
@@ -175,49 +223,57 @@ export default function Hero() {
           pointerEvents: isCurrentLayer && transitionProgress < 0.6 ? 'auto' : 'none'
         }}
       >
-        <motion.div className="mb-7 flex items-center space-x-3" style={eyebrowTile}>
-          <div className="w-10 h-[1px] bg-brand-granite"></div>
-          <span className="text-[12px] font-semibold uppercase tracking-[0.32em] text-brand-granite">{project.eyebrow}</span>
+        <motion.div className={project.titleMinHeight ?? 'min-h-[220px] md:min-h-[280px] lg:min-h-[320px]'} style={headlineTile}>
+          <motion.h1 className="max-w-[340px] text-[50px] font-semibold leading-[0.9] tracking-[-0.045em] text-brand-black md:max-w-[360px] md:text-[64px] lg:text-[72px]">
+            {project.titleLines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </motion.h1>
         </motion.div>
-        <motion.h1
-          className="mb-8 max-w-[340px] text-[50px] font-semibold leading-[0.9] tracking-[-0.045em] text-brand-black md:max-w-[360px] md:text-[64px] lg:text-[72px]"
-          style={headlineTile}
-        >
-          <span className="block">{project.headline}</span>
-          <span className="block font-extrabold">{project.subhead}</span>
-        </motion.h1>
-        <motion.p className="mb-10 max-w-[360px] text-[15px] leading-8 text-brand-charcoal md:text-base" style={bodyTile}>
-          {project.description}
-        </motion.p>
-        <motion.div className="mb-8" style={ctaTile}>
-          <Link
-            href={project.link}
-            className="group inline-flex items-center"
+        <motion.div className="mb-5 min-h-[86px] md:min-h-[110px]" style={bodyTile}>
+          <motion.p className="max-w-[360px] text-[15px] leading-8 text-brand-charcoal md:text-base">
+            {project.desktopDescription ?? project.description}
+          </motion.p>
+        </motion.div>
+        <motion.div className="mb-4" style={ctaTile}>
+          <motion.div
+            animate={navigatingTo === project.link ? { scale: 0.94, y: 2 } : { scale: 1, y: 0 }}
+            whileTap={navigatingTo === project.link ? undefined : { scale: 0.972, y: 1 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="inline-flex"
           >
-            <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-black bg-brand-white transition-all duration-500 group-hover:bg-brand-black group-hover:shadow-[0_10px_24px_rgba(27,33,39,0.16)]">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="text-brand-black transition-all duration-500 group-hover:translate-x-[2px] group-hover:stroke-brand-white"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </span>
-            <span className="-ml-6 flex h-12 min-w-[152px] items-center rounded-r-full border border-l-0 border-brand-black bg-brand-black px-6 pl-10 text-[11px] font-bold uppercase tracking-[0.24em] text-brand-white transition-all duration-500 group-hover:border-brand-black group-hover:bg-brand-white group-hover:pr-7 group-hover:text-brand-black">
-              Explore
-            </span>
-          </Link>
+            <Link
+              href={project.link}
+              onClick={(event) => handleExploreClick(event, project.link)}
+              className="group inline-flex items-center"
+            >
+              <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-black bg-brand-white transition-all duration-500 group-hover:bg-brand-black group-hover:shadow-[0_10px_24px_rgba(27,33,39,0.16)]">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-brand-black transition-all duration-500 group-hover:translate-x-[2px] group-hover:stroke-brand-white"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </span>
+              <span className="-ml-6 flex h-12 min-w-[152px] items-center rounded-r-full border border-l-0 border-brand-black bg-brand-black px-6 pl-10 text-[11px] font-bold uppercase tracking-[0.24em] text-brand-white transition-all duration-500 group-hover:border-brand-black group-hover:bg-brand-white group-hover:pr-7 group-hover:text-brand-black">
+                Explore
+              </span>
+            </Link>
+          </motion.div>
         </motion.div>
-        <motion.div className="mb-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.35em] text-brand-cloud md:hidden" style={statsTile}>
+        <motion.div className="mb-6 flex items-center gap-3 text-[10px] uppercase tracking-[0.35em] text-brand-cloud md:hidden" style={statsTile}>
           <span>{project.index}</span>
           <div className="h-[1px] flex-1 bg-brand-pearl" />
           <span>{project.accent}</span>
         </motion.div>
-        <motion.div className="mt-auto hidden w-full space-x-8 border-t border-brand-pearl pt-6 md:flex" style={statsTile}>
+        <motion.div className="mt-auto hidden w-full space-x-8 border-t border-brand-pearl pt-5 md:flex" style={statsTile}>
           <div className="flex flex-col">
             <span className="text-2xl font-medium text-brand-black">30+</span>
             <span className="mt-1 text-[9px] uppercase tracking-widest text-brand-cloud">Years of Excellence</span>
@@ -270,74 +326,282 @@ export default function Hero() {
     );
   }
 
-  return (
-    <section
-      ref={containerRef}
-      className="relative w-full border-b border-brand-pearl bg-white"
-      style={{ height: `${heroProjects.length * 100}svh` }}
-    >
-      <div className="sticky top-0 md:top-[5rem] z-0 flex h-[100svh] w-full flex-col overflow-hidden md:h-[calc(100svh-5rem)] md:flex-row">
-        <div className="hidden w-12 shrink-0 items-center justify-center border-r border-brand-charcoal bg-brand-black shadow-sm md:flex">
-          <span className="rotate-[-90deg] whitespace-nowrap text-[11px] font-bold uppercase tracking-[0.34em] text-brand-pearl/85">
-            Excellence Since 1994 / Dhaka
-          </span>
-        </div>
-
-        <div className="relative z-10 h-[52svh] w-full shrink-0 overflow-hidden bg-white shadow-[10px_0_15px_-3px_rgba(0,0,0,0.05)] md:h-full md:w-[440px] pointer-events-auto">
+  function renderMobileProjectCard(project: (typeof heroProjects)[number]) {
+    return (
+      <motion.article
+        key={`${project.projectName}-mobile`}
+        initial={{ opacity: 0.55, y: 34, scale: 0.965 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ amount: 0.68, once: false }}
+        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        className="flex h-[calc(100svh-6.75rem)] w-[94vw] shrink-0 snap-center flex-col overflow-hidden rounded-[28px] border border-brand-pearl bg-white shadow-[0_18px_40px_rgba(27,33,39,0.08)]"
+      >
+        <div className="relative h-[34svh] min-h-[220px] w-full overflow-hidden bg-brand-pearl">
           <motion.div
-            className="absolute inset-x-0 top-0 z-10 px-8 pt-6 md:px-12 md:pt-10"
-            initial={hasEntered ? { opacity: 0, y: -18 } : false}
-            animate={hasEntered ? { opacity: 1, y: 0 } : undefined}
-            transition={hasEntered ? { ...introTransition, delay: 0.18 } : undefined}
+            className="absolute inset-0"
+            initial={{ scale: 1.12, opacity: 0.78 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ amount: 0.7, once: false }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="h-[1px] w-full bg-brand-pearl" />
-            <div className="mt-4 h-[2px] w-full bg-brand-pearl/70">
-              <motion.div className="h-full bg-brand-black" style={{ width: progressWidth }} />
-            </div>
+            <Image
+              src={project.image}
+              alt={project.projectName}
+              fill
+              sizes="94vw"
+              className="object-cover"
+              priority={project.index === '01'}
+              referrerPolicy="no-referrer"
+            />
           </motion.div>
-
-          {renderCopyPanel(currentProject, 'current')}
-          {transitionProgress > 0 && transitionState.nextIndex !== transitionState.currentIndex ? renderCopyPanel(nextProject, 'next') : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-black/72 via-brand-black/18 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+            <div className="mb-2 text-[9px] font-semibold uppercase tracking-[0.24em] text-brand-pearl/78">{project.projectName}</div>
+            <p className="max-w-[16rem] text-[18px] font-semibold leading-[1.05] tracking-[-0.03em]">{project.projectDesc}</p>
+          </div>
         </div>
-
-        <div className="relative h-[48svh] flex-1 overflow-hidden bg-brand-stone md:h-full">
-          <div className="absolute inset-0 z-0 h-full w-full overflow-hidden bg-brand-stone">
-            {!hasEntered ? (
-              <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: `url(${currentProject.image})` }}
-              />
-            ) : null}
+        <div className="flex flex-1 flex-col p-4">
+          <div className="flex items-center gap-3 text-[9px] uppercase tracking-[0.24em] text-brand-granite">
+            <span>{project.index}</span>
+            <div className="h-[1px] flex-1 bg-brand-pearl" />
+            <span>{project.accent}</span>
+          </div>
+          <h1 className="mt-4 text-[34px] font-semibold leading-[0.92] tracking-[-0.05em] text-brand-black">
+            {project.titleLines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </h1>
+          <p className="mt-3 line-clamp-3 text-[14px] leading-7 text-brand-charcoal">{project.description}</p>
+          <div className="mt-auto border-t border-brand-pearl pt-3">
+            <div className="flex flex-col gap-3">
             <motion.div
-              className="absolute inset-0"
-              initial={hasEntered ? { opacity: 0, scale: 1.05 } : false}
-              animate={hasEntered ? { opacity: currentImageOpacity, scale: 1 } : undefined}
-              transition={hasEntered ? introTransition : undefined}
-              style={{ opacity: currentImageOpacity, y: currentImageTranslateY }}
+              animate={navigatingTo === project.link ? { scale: 0.94, y: 2 } : { scale: 1, y: 0 }}
+              whileTap={navigatingTo === project.link ? undefined : { scale: 0.972, y: 1 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="inline-flex"
             >
-              <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
-                <Image
-                  src={currentProject.image}
-                  alt={currentProject.projectName}
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 100vw, 70vw"
-                  className="object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </motion.div>
-              <div className="absolute inset-0" style={{ backgroundImage: imageOverlay }} />
-              <div className="absolute inset-x-0 bottom-0 h-1/2" style={{ backgroundImage: imageBottomOverlay }} />
+              <Link href={project.link} onClick={(event) => handleExploreClick(event, project.link)} className="group inline-flex items-center">
+                <span className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-brand-black bg-brand-white transition-all duration-500 group-hover:bg-brand-black">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-brand-black transition-all duration-500 group-hover:translate-x-[2px] group-hover:stroke-brand-white">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </span>
+                <span className="-ml-6 flex h-11 min-w-[144px] items-center rounded-r-full border border-l-0 border-brand-black bg-brand-black px-5 pl-10 text-[10px] font-bold uppercase tracking-[0.24em] text-brand-white">
+                  Explore
+                </span>
+              </Link>
             </motion.div>
-            {transitionProgress > 0 && transitionState.nextIndex !== transitionState.currentIndex ? (
+            <div className="flex justify-between gap-4 text-left">
+              <div>
+                <div className="text-[22px] font-medium leading-none text-brand-black">30+</div>
+                <div className="mt-1 text-[8px] uppercase tracking-[0.22em] text-brand-cloud">Years of Excellence</div>
+              </div>
+              <div>
+                <div className="text-[22px] font-medium leading-none text-brand-black">Thousands</div>
+                <div className="mt-1 text-[8px] uppercase tracking-[0.22em] text-brand-cloud">Happy Families</div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </motion.article>
+    );
+  }
+
+  function renderMobileCopyPanel(project: (typeof heroProjects)[number], layer: 'current' | 'next') {
+    const isCurrentLayer = layer === 'current';
+    const headlineTile = getTileMotion(layer, 0.1, 24);
+    const bodyTile = getTileMotion(layer, 0.18, 18);
+    const ctaTile = getTileMotion(layer, 0.24, 14);
+    const statsTile = getTileMotion(layer, 0.3, 14);
+
+    return (
+      <motion.div
+        key={`${project.projectName}-${layer}-mobile-copy`}
+        className="absolute inset-0 flex h-full w-full flex-col px-4 pb-4 pt-4"
+        initial={false}
+        style={{
+          opacity: 1,
+          y: 0,
+          pointerEvents: isCurrentLayer && transitionProgress < 0.6 ? 'auto' : 'none'
+        }}
+      >
+        <motion.div className="mb-3 flex items-center gap-3 text-[9px] uppercase tracking-[0.24em] text-brand-granite" style={statsTile}>
+          <span>{project.index}</span>
+          <div className="h-[1px] flex-1 bg-brand-pearl" />
+          <span>{project.accent}</span>
+        </motion.div>
+        <motion.h1 className="text-[34px] font-semibold leading-[0.92] tracking-[-0.05em] text-brand-black" style={headlineTile}>
+          {project.titleLines.map((line) => (
+            <span key={line} className="block">
+              {line}
+            </span>
+          ))}
+        </motion.h1>
+        <motion.p className="mt-4 line-clamp-5 text-[14px] leading-7 text-brand-charcoal" style={bodyTile}>
+          {project.description}
+        </motion.p>
+        <motion.div className="mt-auto border-t border-brand-pearl pt-4" style={ctaTile}>
+          <div className="flex flex-col gap-4">
+            <motion.div
+              animate={navigatingTo === project.link ? { scale: 0.94, y: 2 } : { scale: 1, y: 0 }}
+              whileTap={navigatingTo === project.link ? undefined : { scale: 0.972, y: 1 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="inline-flex"
+            >
+              <Link href={project.link} onClick={(event) => handleExploreClick(event, project.link)} className="group inline-flex items-center">
+                <span className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-brand-black bg-brand-white transition-all duration-500 group-hover:bg-brand-black">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-brand-black transition-all duration-500 group-hover:translate-x-[2px] group-hover:stroke-brand-white">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </span>
+                <span className="-ml-6 flex h-11 min-w-[144px] items-center rounded-r-full border border-l-0 border-brand-black bg-brand-black px-5 pl-10 text-[10px] font-bold uppercase tracking-[0.24em] text-brand-white">
+                  Explore
+                </span>
+              </Link>
+            </motion.div>
+            <motion.div className="flex justify-between gap-4 text-left" style={statsTile}>
+              <div>
+                <div className="text-[22px] font-medium leading-none text-brand-black">30+</div>
+                <div className="mt-1 text-[8px] uppercase tracking-[0.22em] text-brand-cloud">Years of Excellence</div>
+              </div>
+              <div>
+                <div className="text-[22px] font-medium leading-none text-brand-black">Thousands</div>
+                <div className="mt-1 text-[8px] uppercase tracking-[0.22em] text-brand-cloud">Happy Families</div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
+  return (
+    <>
+      {isMobile ? (
+        <section
+          ref={mobileContainerRef}
+          className="relative border-b border-brand-pearl bg-white"
+          style={{ height: `${heroProjects.length * 100}svh` }}
+        >
+          <div className={isPinned
+            ? 'fixed left-0 right-0 top-20 z-0 h-[calc(100svh-5rem)] overflow-hidden border-b border-brand-pearl bg-white'
+            : 'absolute inset-x-0 bottom-0 z-0 h-[calc(100svh-5rem)] overflow-hidden border-b border-brand-pearl bg-white'}>
+            <div className="relative h-[36svh] min-h-[220px] w-full overflow-hidden bg-brand-pearl">
+              {!hasEntered ? (
+                <div
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                  style={{ backgroundImage: `url(${currentProject.image})` }}
+                />
+              ) : null}
               <motion.div
                 className="absolute inset-0"
-                style={{ opacity: nextImageOpacity, y: nextImageTranslateY, clipPath: revealClipPath }}
+                initial={hasEntered ? { opacity: 0, scale: 1.05 } : false}
+                animate={hasEntered ? { opacity: currentImageOpacity, scale: 1 } : undefined}
+                transition={hasEntered ? introTransition : undefined}
+                style={{ opacity: currentImageOpacity, y: currentImageTranslateY }}
               >
                 <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
                   <Image
-                    src={nextProject.image}
-                    alt={nextProject.projectName}
+                    src={currentProject.image}
+                    alt={currentProject.projectName}
+                    fill
+                    priority
+                    sizes="100vw"
+                    className="object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </motion.div>
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-black/72 via-brand-black/18 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+                  <div className="mb-2 text-[9px] font-semibold uppercase tracking-[0.24em] text-brand-pearl/78">{currentProject.projectName}</div>
+                  <p className="max-w-[16rem] text-[18px] font-semibold leading-[1.05] tracking-[-0.03em]">{currentProject.projectDesc}</p>
+                </div>
+              </motion.div>
+              {transitionProgress > 0 && transitionState.nextIndex !== transitionState.currentIndex ? (
+                <motion.div className="absolute inset-0" style={{ opacity: nextImageOpacity, y: nextImageTranslateY, clipPath: revealClipPath }}>
+                  <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
+                    <Image
+                      src={nextProject.image}
+                      alt={nextProject.projectName}
+                      fill
+                      priority
+                      sizes="100vw"
+                      className="object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </motion.div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-black/72 via-brand-black/18 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+                    <div className="mb-2 text-[9px] font-semibold uppercase tracking-[0.24em] text-brand-pearl/78">{nextProject.projectName}</div>
+                    <p className="max-w-[16rem] text-[18px] font-semibold leading-[1.05] tracking-[-0.03em]">{nextProject.projectDesc}</p>
+                  </div>
+                </motion.div>
+              ) : null}
+            </div>
+            <div className="relative h-[calc(100%-36svh)] min-h-[360px] overflow-hidden bg-white">
+              {renderMobileCopyPanel(currentProject, 'current')}
+              {transitionProgress > 0 && transitionState.nextIndex !== transitionState.currentIndex ? renderMobileCopyPanel(nextProject, 'next') : null}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      <section
+        ref={desktopContainerRef}
+        className="relative hidden w-full border-b border-brand-pearl bg-white md:block"
+        style={{ height: `${heroProjects.length * 100}svh` }}
+      >
+      <div
+        className={isPinned
+          ? 'fixed left-1/2 top-20 z-0 w-full max-w-[1920px] -translate-x-1/2 md:top-[5rem] md:w-[calc(100%-16px)] md:max-w-[calc(1920px-16px)]'
+          : 'absolute inset-x-0 bottom-0 z-0'}
+      >
+        <div className="flex h-[calc(100svh-5rem)] w-full flex-col overflow-hidden md:h-[calc(100svh-5rem)] md:flex-row">
+          <div className="hidden w-12 shrink-0 items-center justify-center border-r border-brand-charcoal bg-brand-black shadow-sm md:flex">
+          <span className="rotate-[-90deg] whitespace-nowrap text-[11px] font-bold uppercase tracking-[0.34em] text-brand-pearl/85">
+            Excellence Since 1994 / Dhaka
+          </span>
+          </div>
+
+          <div className="relative z-10 h-[52svh] w-full shrink-0 overflow-hidden bg-white shadow-[10px_0_15px_-3px_rgba(0,0,0,0.05)] pointer-events-auto md:h-full md:w-[440px]">
+            <motion.div
+              className="absolute inset-x-0 top-0 z-10 px-8 pt-6 md:px-12 md:pt-10"
+              initial={hasEntered ? { opacity: 0, y: -18 } : false}
+              animate={hasEntered ? { opacity: 1, y: 0 } : undefined}
+              transition={hasEntered ? { ...introTransition, delay: 0.18 } : undefined}
+            >
+              <div className="h-[1px] w-full bg-brand-pearl" />
+              <div className="mt-4 h-[2px] w-full bg-brand-pearl/70">
+                <motion.div className="h-full bg-brand-black" style={{ width: progressWidth }} />
+              </div>
+            </motion.div>
+
+            {renderCopyPanel(currentProject, 'current')}
+            {transitionProgress > 0 && transitionState.nextIndex !== transitionState.currentIndex ? renderCopyPanel(nextProject, 'next') : null}
+          </div>
+
+          <div className="relative h-[48svh] flex-1 overflow-hidden bg-brand-stone md:h-full">
+            <div className="absolute inset-0 z-0 h-full w-full overflow-hidden bg-brand-stone">
+              {!hasEntered ? (
+                <div
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                  style={{ backgroundImage: `url(${currentProject.image})` }}
+                />
+              ) : null}
+              <motion.div
+                className="absolute inset-0"
+                initial={hasEntered ? { opacity: 0, scale: 1.05 } : false}
+                animate={hasEntered ? { opacity: currentImageOpacity, scale: 1 } : undefined}
+                transition={hasEntered ? introTransition : undefined}
+                style={{ opacity: currentImageOpacity, y: currentImageTranslateY }}
+              >
+                <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
+                  <Image
+                    src={currentProject.image}
+                    alt={currentProject.projectName}
                     fill
                     priority
                     sizes="(max-width: 768px) 100vw, 70vw"
@@ -348,16 +612,37 @@ export default function Hero() {
                 <div className="absolute inset-0" style={{ backgroundImage: imageOverlay }} />
                 <div className="absolute inset-x-0 bottom-0 h-1/2" style={{ backgroundImage: imageBottomOverlay }} />
               </motion.div>
-            ) : null}
-            <div className="pointer-events-none absolute inset-0 z-10 hidden border-[20px] border-brand-pearl shadow-inner md:block" />
-          </div>
+              {transitionProgress > 0 && transitionState.nextIndex !== transitionState.currentIndex ? (
+                <motion.div
+                  className="absolute inset-0"
+                  style={{ opacity: nextImageOpacity, y: nextImageTranslateY, clipPath: revealClipPath }}
+                >
+                  <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
+                    <Image
+                      src={nextProject.image}
+                      alt={nextProject.projectName}
+                      fill
+                      priority
+                      sizes="(max-width: 768px) 100vw, 70vw"
+                      className="object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </motion.div>
+                  <div className="absolute inset-0" style={{ backgroundImage: imageOverlay }} />
+                  <div className="absolute inset-x-0 bottom-0 h-1/2" style={{ backgroundImage: imageBottomOverlay }} />
+                </motion.div>
+              ) : null}
+              <div className="pointer-events-none absolute inset-0 z-10 hidden border-[20px] border-brand-pearl shadow-inner md:block" />
+            </div>
 
-          <div className="pointer-events-none absolute inset-0 z-20 h-full w-full overflow-hidden">
-            {renderProjectCard(currentProject, 'current')}
-            {transitionProgress > 0 && transitionState.nextIndex !== transitionState.currentIndex ? renderProjectCard(nextProject, 'next') : null}
+            <div className="pointer-events-none absolute inset-0 z-20 h-full w-full overflow-hidden">
+              {renderProjectCard(currentProject, 'current')}
+              {transitionProgress > 0 && transitionState.nextIndex !== transitionState.currentIndex ? renderProjectCard(nextProject, 'next') : null}
+            </div>
           </div>
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }

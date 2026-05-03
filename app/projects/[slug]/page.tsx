@@ -1,222 +1,268 @@
 'use client';
 
+import { useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'motion/react';
-import { useRef, useState } from 'react';
-import { Check, MapPin, Grid, Layers, Ruler } from 'lucide-react';
 import Link from 'next/link';
+import { motion, useScroll, useTransform } from 'motion/react';
+import { Check, Grid, Layers, MapPin, Ruler } from 'lucide-react';
+import { getProjectRecord } from '@/lib/project-data';
 
-// Mock data fetcher
-const getProjectData = (id: string) => {
-  return {
-    title: id.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Suvastu Nabarun',
-    location: 'Gulshan 2, Dhaka',
-    status: 'Ongoing',
-    heroImage: 'https://picsum.photos/seed/hero/1920/1080',
-    overview: 'Suvastu Nabarun is a paradigm of luxury living, meticulously designed to offer an oasis of tranquility amidst the vibrant energy of Gulshan 2. With panoramic views and bespoke amenities, it redefines the modern urban sanctuary.',
-    features: ['Double-height Lobby', 'Infinity Pool', 'State-of-the-art Gym', 'Smart Home Features', '24/7 Concierge', 'Green Terraces'],
-    gallery: [
-      'https://picsum.photos/seed/g1/800/800',
-      'https://picsum.photos/seed/g2/800/1200',
-      'https://picsum.photos/seed/g3/1200/800',
-      'https://picsum.photos/seed/g4/800/800',
-    ],
-    stats: [
-      { icon: <Layers size={20}/>, label: 'Floors', value: '14' },
-      { icon: <Grid size={20}/>, label: 'Units', value: '26' },
-      { icon: <Ruler size={20}/>, label: 'Size', value: '4500 - 6200 sqft' }
-    ]
-  }
-};
+const statIcons = {
+  Floors: Layers,
+  Units: Grid,
+  Size: Ruler,
+} as const;
 
 export default function ProjectDetail() {
   const params = useParams();
-  const id = Array.isArray(params.slug) ? params.slug[0] : params.slug || '1';
-  const data = getProjectData(id);
-  
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug || 'suvastu-shaptarshi';
+  const data = getProjectRecord(slug);
+
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ['start start', 'end start']
   });
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '40%']);
-  const titleY = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '32%']);
+  const titleY = useTransform(scrollYProgress, [0, 1], ['0%', '42%']);
   const opacity = useTransform(scrollYProgress, [0, 0.8, 1], [1, 0, 0]);
-  
-  const [activeFloorplan, setActiveFloorplan] = useState('Type A');
 
   return (
     <main className="bg-white">
-      {/* Hero Section */}
-      <section ref={heroRef} className="relative h-[80vh] w-full overflow-hidden bg-brand-pearl border-b border-brand-pearl">
-        <motion.div 
-          style={{ y, scale: 1.1 }} 
+      <section ref={heroRef} className="relative h-[72vh] w-full overflow-hidden border-b border-brand-pearl bg-brand-pearl md:h-[82vh]">
+        <motion.div
+          style={{ y, scale: 1.08 }}
           className="absolute inset-0"
-          initial={{ scale: 1.2, filter: 'blur(10px)' }}
-          animate={{ scale: 1.1, filter: 'blur(0px)' }}
-          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ scale: 1.16, filter: 'blur(10px)' }}
+          animate={{ scale: 1.08, filter: 'blur(0px)' }}
+          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
         >
-          <Image 
+          <Image
             src={data.heroImage}
             alt={data.title}
             fill
+            sizes="100vw"
             className="object-cover opacity-90"
             priority
-            referrerPolicy="no-referrer"
           />
         </motion.div>
-        <div className="absolute inset-x-0 bottom-0 pb-24 px-6 lg:px-12 bg-gradient-to-t from-brand-black/90 via-brand-black/40 to-transparent">
-          <motion.div 
-            style={{ y: titleY, opacity }}
-            className="max-w-7xl mx-auto flex flex-col items-start"
-          >
-            <motion.span 
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/48 to-brand-black/10" />
+        <div className="absolute inset-x-0 bottom-0 px-6 pb-14 md:px-12 md:pb-24">
+          <motion.div style={{ y: titleY, opacity }} className="mx-auto max-w-7xl">
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="text-white text-[9px] tracking-[0.4em] uppercase mb-6 border border-white/30 px-3 py-1 bg-brand-black/20 backdrop-blur-sm"
+              transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm"
             >
-              {data.status}
-            </motion.span>
-            
-            <motion.h1 
-              initial={{ opacity: 0, y: 40 }}
+              <span className="text-[9px] uppercase tracking-[0.34em] text-white">{data.status}</span>
+              <span className="h-1 w-1 rounded-full bg-brand-pearl/70" />
+              <span className="text-[9px] uppercase tracking-[0.34em] text-brand-pearl">{data.location}</span>
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 36 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="text-5xl md:text-[80px] leading-[0.9] font-normal tracking-tight text-white mb-6"
+              transition={{ duration: 1.1, delay: 0.38, ease: [0.16, 1, 0.3, 1] }}
+              className="max-w-5xl text-[42px] font-semibold leading-[0.94] tracking-[-0.05em] text-white sm:text-6xl md:text-[82px]"
             >
               {data.title}
             </motion.h1>
-            
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1.2, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="flex items-center text-brand-pearl text-sm font-light gap-2"
+            <motion.p
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-6 max-w-3xl text-[15px] leading-8 text-brand-pearl md:text-base"
             >
-              <MapPin size={18} />
-              <span>{data.location}</span>
+              {data.positioning}
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-8 flex flex-wrap gap-4"
+            >
+              <Link href="/contact#buyer-form" className="inline-flex items-center gap-3 rounded-full border border-white bg-white px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-black transition-colors hover:bg-transparent hover:text-white">
+                Request Brochure
+              </Link>
+              <Link href="/contact#buyer-form" className="inline-flex items-center gap-3 rounded-full border border-white/35 px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-white transition-colors hover:border-white hover:bg-white/10">
+                Book Site Visit
+              </Link>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Overview & Stats */}
-      <section className="py-24 md:py-32 px-6 lg:px-12 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-          <div className="lg:col-span-2">
-            <div className="mb-6 flex items-center space-x-3">
-              <div className="w-10 h-[1px] bg-brand-granite"></div>
-              <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">The Vision</span>
+      <section className="mx-auto max-w-7xl px-6 py-18 md:px-12 md:py-24">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+          <div>
+            <div className="mb-6 flex items-center gap-3">
+              <div className="h-[1px] w-10 bg-brand-granite" />
+              <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Project Overview</span>
             </div>
-            <p className="text-xl md:text-3xl text-brand-charcoal font-light leading-relaxed mb-12">
+            <h2 className="max-w-3xl text-[30px] font-semibold leading-[1.04] tracking-[-0.04em] text-brand-black md:text-[52px]">
               {data.overview}
-            </p>
+            </h2>
+            <div className="mt-8 flex items-center gap-3 text-[14px] text-brand-charcoal">
+              <MapPin size={16} />
+              <span>{data.location}</span>
+            </div>
           </div>
-          <div className="space-y-8 p-10 bg-brand-pearl">
-            {data.stats.map((stat, i) => (
-              <div key={i} className="flex items-center gap-6">
-                <div className="text-brand-charcoal">{stat.icon}</div>
-                <div>
-                  <p className="text-[9px] tracking-[0.3em] uppercase text-brand-granite mb-1">{stat.label}</p>
-                  <p className="text-xl text-brand-black font-semibold">{stat.value}</p>
+          <div className="grid gap-4 rounded-[28px] border border-brand-pearl bg-brand-pearl/45 p-6 md:p-8">
+            {data.stats.map((stat) => {
+              const Icon = statIcons[stat.label as keyof typeof statIcons] ?? Layers;
+              return (
+                <div key={stat.label} className="flex items-center gap-5 border-b border-brand-stone/60 pb-4 last:border-b-0 last:pb-0">
+                  <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-brand-black text-brand-black">
+                    <Icon size={18} />
+                  </div>
+                  <div>
+                    <p className="mb-1 text-[9px] uppercase tracking-[0.3em] text-brand-granite">{stat.label}</p>
+                    <p className="text-[22px] font-semibold tracking-[-0.03em] text-brand-black">{stat.value}</p>
+                  </div>
                 </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-brand-pearl bg-brand-pearl/28 px-6 py-16 md:px-12 md:py-24">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+          <div>
+            <div className="mb-5 flex items-center gap-3">
+              <div className="h-[1px] w-10 bg-brand-granite" />
+              <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">USP</span>
+            </div>
+            <h2 className="text-[30px] font-semibold leading-[1.04] tracking-[-0.04em] text-brand-black md:text-[52px]">
+              {data.uspTitle}
+            </h2>
+          </div>
+          <div className="grid gap-5 md:grid-cols-3">
+            {data.uspPoints.map((point) => (
+              <div key={point} className="rounded-[24px] border border-brand-pearl bg-white p-6 shadow-[0_16px_40px_rgba(27,33,39,0.04)]">
+                <div className="mb-5 h-1.5 w-14 bg-brand-black" />
+                <p className="text-[15px] leading-7 text-brand-charcoal">{point}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Gallery Grid */}
-      <section className="pb-24 pt-12 px-6 lg:px-12 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {data.gallery.map((img, i) => (
-            <div key={i} className={`relative overflow-hidden group border-4 border-brand-pearl ${i === 2 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-square'}`}>
-              <Image 
-                src={img} 
-                alt={`${data.title} Gallery ${i+1}`} 
-                fill 
-                className="object-cover transition-transform duration-1000 group-hover:scale-105"
-                referrerPolicy="no-referrer"
+      <section className="mx-auto max-w-7xl px-6 py-16 md:px-12 md:py-24">
+        <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
+          <div className="relative min-h-[320px] overflow-hidden rounded-[28px] border border-brand-pearl bg-brand-pearl">
+            <Image src={data.gallery[1] ?? data.heroImage} alt={`${data.title} lifestyle`} fill sizes="(max-width: 1024px) 100vw, 45vw" className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-black/75 via-brand-black/10 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-brand-pearl">Lifestyle Context</p>
+              <p className="mt-3 max-w-md text-[20px] font-semibold leading-[1.1] tracking-[-0.03em] text-white md:text-[28px]">{data.projectDesc}</p>
+            </div>
+          </div>
+          <div>
+            <div className="mb-5 flex items-center gap-3">
+              <div className="h-[1px] w-10 bg-brand-granite" />
+              <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Lifestyle Story</span>
+            </div>
+            <h2 className="text-[30px] font-semibold leading-[1.04] tracking-[-0.04em] text-brand-black md:text-[52px]">
+              {data.lifestyleTitle}
+            </h2>
+            <div className="mt-8 space-y-6 text-[15px] leading-8 text-brand-charcoal md:text-base">
+              {data.lifestyleBody.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 pb-10 pt-2 md:px-12 md:pb-16">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {data.gallery.map((img, index) => (
+            <div key={img + index} className={`relative overflow-hidden rounded-[24px] border border-brand-pearl bg-brand-pearl ${index === 2 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-square'}`}>
+              <Image
+                src={img}
+                alt={`${data.title} gallery ${index + 1}`}
+                fill
+                sizes={index === 2 ? '100vw' : '(max-width: 768px) 100vw, 50vw'}
+                className="object-cover transition-transform duration-1000 hover:scale-105"
               />
             </div>
           ))}
         </div>
       </section>
 
-      {/* Floor Plans (Mock) */}
-      <section className="py-24 md:py-32 px-6 lg:px-12 border-t border-brand-pearl bg-brand-pearl">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-12 flex flex-col items-center">
-            <div className="mb-6 flex items-center space-x-3">
-              <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Floor Plans</span>
+      <section className="border-t border-brand-pearl bg-white px-6 py-16 md:px-12 md:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 flex items-center gap-3">
+            <div className="h-[1px] w-10 bg-brand-granite" />
+            <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Buyer Intent</span>
+          </div>
+          <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+            <div>
+              <h2 className="text-[30px] font-semibold leading-[1.04] tracking-[-0.04em] text-brand-black md:text-[52px]">
+                {data.buyerIntentTitle}
+              </h2>
+              <p className="mt-6 max-w-xl text-[15px] leading-8 text-brand-charcoal md:text-base">
+                The strongest project pages do not only show amenities. They help buyers understand whether a property matches their actual lifestyle, confidence threshold, and decision stage.
+              </p>
             </div>
-            <h2 className="text-4xl leading-[1] font-normal tracking-tight text-brand-black">Schematic Design</h2>
-          </div>
-          
-          <div className="flex justify-center gap-4 md:gap-8 mb-12">
-            {['Type A', 'Type B', 'Penthouse'].map(type => (
-              <button
-                key={type}
-                onClick={() => setActiveFloorplan(type)}
-                className={`text-[10px] tracking-[0.2em] font-semibold uppercase pb-2 transition-colors relative ${
-                  activeFloorplan === type ? 'text-brand-black' : 'text-brand-granite hover:text-brand-charcoal'
-                }`}
-              >
-                {type}
-                {activeFloorplan === type && (
-                  <motion.div layoutId="active-floorplan" className="absolute left-0 right-0 bottom-0 h-[2px] bg-brand-black" />
-                )}
-              </button>
-            ))}
-          </div>
-          <div className="relative aspect-video w-full max-w-4xl mx-auto bg-white flex items-center justify-center p-8 shadow-2xl border-4 border-brand-pearl border-opacity-50">
-             <div className="text-brand-granite font-light text-center">
-               <p className="mb-4 text-sm">Internal schematic for <span className="font-medium text-brand-black">{activeFloorplan}</span></p>
-               <p className="text-xs uppercase tracking-widest">(Interactive blueprint visualization)</p>
-             </div>
+            <div className="grid gap-5 md:grid-cols-3">
+              {data.buyerIntentCards.map((card) => (
+                <div key={card.title} className="rounded-[24px] border border-brand-pearl bg-brand-pearl/26 p-6">
+                  <div className="mb-5 inline-flex h-10 w-10 items-center justify-center rounded-full border border-brand-black text-brand-black">
+                    <Check size={16} />
+                  </div>
+                  <h3 className="mb-3 text-[22px] font-semibold leading-[1.05] tracking-[-0.03em] text-brand-black">{card.title}</h3>
+                  <p className="text-[15px] leading-7 text-brand-charcoal">{card.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-24 md:py-32 bg-white text-brand-black px-6 lg:px-12 border-b border-brand-pearl">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-16 flex flex-col items-center">
-            <h2 className="text-4xl md:text-[56px] leading-[1] font-normal tracking-tight text-brand-black">Signature Amenities</h2>
+      <section className="border-t border-brand-pearl bg-brand-pearl/3 px-6 py-16 md:px-12 md:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 flex items-center gap-3">
+            <div className="h-[1px] w-10 bg-brand-granite" />
+            <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Signature Amenities</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-8">
-            {data.features.map((feature, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="flex items-center gap-6 p-6 border border-brand-pearl"
-              >
-                <div className="h-10 w-10 shrink-0 rounded-full border border-brand-black flex items-center justify-center text-brand-black">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {data.features.map((feature) => (
+              <div key={feature} className="flex items-center gap-5 rounded-[22px] border border-brand-pearl bg-white p-6">
+                <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand-black text-brand-black">
                   <Check size={16} />
                 </div>
-                <span className="text-sm font-medium tracking-wide text-brand-charcoal uppercase">{feature}</span>
-              </motion.div>
+                <span className="text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-charcoal">{feature}</span>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-32 text-center px-6">
-        <div className="mb-6 flex items-center justify-center space-x-3">
-          <div className="w-10 h-[1px] bg-brand-granite"></div>
-          <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Inquire</span>
-          <div className="w-10 h-[1px] bg-brand-granite"></div>
+      <section className="px-6 py-16 text-center md:px-12 md:py-24">
+        <div className="mx-auto max-w-4xl">
+          <div className="mb-6 flex items-center justify-center gap-3">
+            <div className="h-[1px] w-10 bg-brand-granite" />
+            <span className="text-[11px] uppercase tracking-[0.3em] text-brand-granite">Next Step</span>
+            <div className="h-[1px] w-10 bg-brand-granite" />
+          </div>
+          <h2 className="text-[32px] font-semibold leading-[1] tracking-[-0.04em] text-brand-black md:text-[56px]">
+            Ready to discuss {data.title}?
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-8 text-brand-charcoal md:text-base">
+            Move into the buyer route to request a brochure, compare this project with other Suvastu addresses, or schedule a site visit with the right advisor.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Link href="/contact#buyer-form" className="inline-flex items-center gap-3 rounded-full border border-brand-black bg-brand-black px-7 py-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-white transition-colors hover:bg-transparent hover:text-brand-black">
+              Request Brochure
+            </Link>
+            <Link href="/projects" className="inline-flex items-center gap-3 rounded-full border border-brand-stone px-7 py-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-black transition-colors hover:border-brand-black">
+              Compare More Projects
+            </Link>
+          </div>
         </div>
-        <h2 className="text-4xl md:text-[56px] leading-[1] font-normal tracking-tight text-brand-black mb-12">Discuss this property</h2>
-        <Link href="/contact#buyer-form" className="inline-block text-[10px] uppercase tracking-widest border border-brand-stone px-10 py-4 font-semibold text-brand-black hover:bg-brand-black hover:text-white transition-colors duration-300">
-          Request Brochure
-        </Link>
       </section>
     </main>
   );
