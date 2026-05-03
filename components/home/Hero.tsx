@@ -485,6 +485,7 @@ export default function Hero() {
       {isMobile ? (
         <section
           ref={mobileContainerRef}
+          data-home-hero="true"
           className="relative border-b border-brand-pearl bg-white"
           style={{ height: heroScrollHeight }}
         >
@@ -553,6 +554,7 @@ export default function Hero() {
 
       <section
         ref={desktopContainerRef}
+        data-home-hero="true"
         className="relative hidden w-full border-b border-brand-pearl bg-white md:block"
         style={{ height: heroScrollHeight }}
       >

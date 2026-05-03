@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'motion/react';
@@ -24,11 +24,68 @@ const projectSections = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const { scrollY } = useScroll();
   const pathname = usePathname();
+  const lastScrollYRef = useRef(0);
+  const heroEndThresholdRef = useRef(0);
+
+  useEffect(() => {
+    const updateHeroThreshold = () => {
+      if (pathname !== '/') {
+        heroEndThresholdRef.current = 0;
+        return;
+      }
+
+      const heroSections = Array.from(document.querySelectorAll<HTMLElement>('[data-home-hero="true"]'));
+      const visibleHeroSection = heroSections.find((section) => section.getClientRects().length > 0);
+
+      if (!visibleHeroSection) {
+        heroEndThresholdRef.current = 0;
+        return;
+      }
+
+      heroEndThresholdRef.current = Math.max(
+        visibleHeroSection.offsetTop + visibleHeroSection.offsetHeight - window.innerHeight,
+        0,
+      );
+    };
+
+    updateHeroThreshold();
+    window.addEventListener('resize', updateHeroThreshold);
+
+    return () => {
+      window.removeEventListener('resize', updateHeroThreshold);
+    };
+  }, [pathname]);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 50);
+
+    if (mobileMenuOpen) {
+      lastScrollYRef.current = latest;
+      setIsHeaderVisible(true);
+      return;
+    }
+
+    if (pathname === '/' && latest < heroEndThresholdRef.current) {
+      lastScrollYRef.current = latest;
+      setIsHeaderVisible(true);
+      return;
+    }
+
+    const previous = lastScrollYRef.current;
+    const delta = latest - previous;
+
+    if (latest <= 24) {
+      setIsHeaderVisible(true);
+    } else if (delta > 8) {
+      setIsHeaderVisible(false);
+    } else if (delta < -8) {
+      setIsHeaderVisible(true);
+    }
+
+    lastScrollYRef.current = latest;
   });
 
   const isHome = pathname === '/';
@@ -45,7 +102,7 @@ export default function Header() {
       <motion.header
         className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${headerBg}`}
         initial={{ y: -100 }}
-        animate={{ y: 0 }}
+        animate={{ y: isHeaderVisible || mobileMenuOpen ? 0 : -96 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="w-full px-6 lg:px-12 h-20 flex items-center justify-between">
