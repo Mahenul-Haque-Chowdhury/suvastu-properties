@@ -93,6 +93,7 @@ export default function Hero() {
   const isMobile = useIsMobile();
   const desktopContainerRef = useRef<HTMLDivElement>(null);
   const mobileContainerRef = useRef<HTMLDivElement>(null);
+  const pinnedStateRef = useRef(true);
   const navigationTimeoutRef = useRef<number | null>(null);
   const [transitionState, setTransitionState] = useState({
     currentIndex: 0,
@@ -102,7 +103,7 @@ export default function Hero() {
   const [hasEntered, setHasEntered] = useState(false);
   const [isPinned, setIsPinned] = useState(true);
   const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
-  const heroScrollHeight = `${heroProjects.length * 72}svh`;
+  const heroScrollHeight = `${heroProjects.length * (isMobile ? 68 : 64)}svh`;
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
@@ -167,26 +168,39 @@ export default function Hero() {
   });
 
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
-    setIsPinned(latest < 0.999);
+    const nextPinned = pinnedStateRef.current
+      ? latest < 0.996
+      : latest < 0.985;
+
+    if (nextPinned !== pinnedStateRef.current) {
+      pinnedStateRef.current = nextPinned;
+      setIsPinned(nextPinned);
+    }
   });
 
   const currentProject = heroProjects[transitionState.currentIndex];
   const nextProject = heroProjects[transitionState.nextIndex];
   const transitionProgress = transitionState.transitionProgress;
-  const currentOpacity = 1 - clamp(transitionProgress * 1.75, 0, 1);
-  const nextOpacity = clamp((transitionProgress - 0.34) / 0.66, 0, 1);
+  const currentOpacity = 1 - clamp(transitionProgress / 0.24, 0, 1);
+  const nextOpacity = clamp((transitionProgress - 0.62) / 0.2, 0, 1);
   const currentImageOpacity = 1;
-  const nextImageOpacity = 0.26 + clamp((transitionProgress - 0.18) / 0.82, 0, 1) * 0.74;
+  const nextImageOpacity = 1;
   const currentTranslateY = -26 * transitionProgress;
-  const nextTranslateY = 40 * (1 - transitionProgress);
+  const nextTranslateY = 24 * (1 - nextOpacity);
   const currentImageTranslateY = 0;
   const nextImageTranslateY = 20 * (1 - transitionProgress);
-  const revealRadius = `${32 + transitionProgress * 138}%`;
-  const revealClipPath = `circle(${revealRadius} at 100% 0%)`;
+  const revealProgress = 1 - Math.pow(1 - transitionProgress, 1.8);
+  const revealInset = `${(1 - revealProgress) * 100}%`;
+  const revealClipPath = `inset(${revealInset} 0 0 0)`;
   const imageOverlay = 'linear-gradient(180deg, rgba(83,90,95,0.42), rgba(27,33,39,0.68))';
   const imageBottomOverlay = 'linear-gradient(to top, rgba(27,33,39,0.72), rgba(27,33,39,0.28), rgba(27,33,39,0))';
+  const nextImageY = `${(1 - revealProgress) * 4}%`;
   const introTransition = {
-    duration: 1.2,
+    duration: 0.9,
+    ease: [0.22, 1, 0.36, 1] as const
+  };
+  const introRevealTransition = {
+    duration: 1.05,
     ease: [0.16, 1, 0.3, 1] as const
   };
 
@@ -300,8 +314,7 @@ export default function Hero() {
         style={{
           opacity: isCurrentLayer ? currentOpacity : nextOpacity,
           y: isCurrentLayer ? currentTranslateY : nextTranslateY,
-          pointerEvents: isCurrentLayer && transitionProgress < 0.6 ? 'auto' : 'none',
-          clipPath: isCurrentLayer ? undefined : revealClipPath
+          pointerEvents: isCurrentLayer && transitionProgress < 0.6 ? 'auto' : 'none'
         }}
       >
         <div className="relative h-full w-full">
@@ -493,20 +506,20 @@ export default function Hero() {
             ? 'fixed left-0 right-0 top-20 z-0 h-[calc(100svh-5rem)] overflow-hidden border-b border-brand-pearl bg-white'
             : 'absolute inset-x-0 bottom-0 z-0 h-[calc(100svh-5rem)] overflow-hidden border-b border-brand-pearl bg-white'}>
             <div className="relative h-[36svh] min-h-[220px] w-full overflow-hidden bg-brand-pearl">
-              {!hasEntered ? (
-                <div
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                  style={{ backgroundImage: `url(${currentProject.image})` }}
-                />
-              ) : null}
               <motion.div
                 className="absolute inset-0"
-                initial={hasEntered ? { opacity: 0, scale: 1.05 } : false}
-                animate={hasEntered ? { opacity: currentImageOpacity, scale: 1 } : undefined}
-                transition={hasEntered ? introTransition : undefined}
+                initial={{ opacity: 1 }}
+                animate={{ opacity: currentImageOpacity }}
+                transition={introRevealTransition}
                 style={{ opacity: currentImageOpacity, y: currentImageTranslateY }}
               >
-                <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
+                <motion.div
+                  className="absolute inset-0 origin-bottom"
+                  initial={{ scaleY: 0.82, y: '12%' }}
+                  animate={hasEntered ? { scaleY: 1, y: '0%' } : { scaleY: 0.82, y: '12%' }}
+                  transition={introRevealTransition}
+                  style={{ scale: imageScale, y: imageY }}
+                >
                   <Image
                     src={currentProject.image}
                     alt={currentProject.projectName}
@@ -524,7 +537,7 @@ export default function Hero() {
                 </div>
               </motion.div>
               {transitionProgress > 0 && transitionState.nextIndex !== transitionState.currentIndex ? (
-                <motion.div className="absolute inset-0" style={{ opacity: nextImageOpacity, y: nextImageTranslateY, clipPath: revealClipPath }}>
+                <motion.div className="absolute inset-0" style={{ opacity: nextImageOpacity, y: nextImageY, clipPath: revealClipPath }}>
                   <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
                     <Image
                       src={nextProject.image}
@@ -589,20 +602,20 @@ export default function Hero() {
 
           <div className="relative h-[48svh] flex-1 overflow-hidden bg-brand-stone md:h-full">
             <div className="absolute inset-0 z-0 h-full w-full overflow-hidden bg-brand-stone">
-              {!hasEntered ? (
-                <div
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                  style={{ backgroundImage: `url(${currentProject.image})` }}
-                />
-              ) : null}
               <motion.div
                 className="absolute inset-0"
-                initial={hasEntered ? { opacity: 0, scale: 1.05 } : false}
-                animate={hasEntered ? { opacity: currentImageOpacity, scale: 1 } : undefined}
-                transition={hasEntered ? introTransition : undefined}
+                initial={false}
+                animate={{ opacity: currentImageOpacity }}
+                transition={introRevealTransition}
                 style={{ opacity: currentImageOpacity, y: currentImageTranslateY }}
               >
-                <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
+                <motion.div
+                  className="absolute inset-0 origin-bottom"
+                  initial={hasEntered ? { scaleY: 0.82, y: '12%' } : false}
+                  animate={hasEntered ? { scaleY: 1, y: '0%' } : undefined}
+                  transition={introRevealTransition}
+                  style={{ scale: imageScale, y: imageY }}
+                >
                   <Image
                     src={currentProject.image}
                     alt={currentProject.projectName}
@@ -619,7 +632,7 @@ export default function Hero() {
               {transitionProgress > 0 && transitionState.nextIndex !== transitionState.currentIndex ? (
                 <motion.div
                   className="absolute inset-0"
-                  style={{ opacity: nextImageOpacity, y: nextImageTranslateY, clipPath: revealClipPath }}
+                  style={{ opacity: nextImageOpacity, y: nextImageY, clipPath: revealClipPath }}
                 >
                   <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
                     <Image

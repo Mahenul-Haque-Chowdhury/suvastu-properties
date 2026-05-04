@@ -30,16 +30,12 @@ export default function FeaturedProjects() {
     if (isMobile) return;
     if (!triggerRef.current || !containerRef.current) return;
 
-    const images = gsap.utils.toArray('.project-image', triggerRef.current);
     const horizontalDistance = Math.max(
       containerRef.current.scrollWidth - triggerRef.current.clientWidth,
       0,
     );
 
     if (horizontalDistance <= 0) return;
-    
-    // Set initial scale for inner image parallax to prevent showing edges
-    gsap.set(images, { scale: 1.2, xPercent: -10 });
     
     // Header scroll-linked animation
     gsap.fromTo(
@@ -92,13 +88,6 @@ export default function FeaturedProjects() {
       x: -horizontalDistance,
       ease: "none",
     }, 0);
-    
-    // Parallax the inner images slightly to the right as we scroll left
-    tl.to(images, {
-      xPercent: 10,
-      ease: "none",
-    }, 0);
-
   }, { scope: triggerRef, dependencies: [isMobile] });
 
   return (

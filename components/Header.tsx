@@ -29,6 +29,8 @@ export default function Header() {
   const pathname = usePathname();
   const lastScrollYRef = useRef(0);
   const heroEndThresholdRef = useRef(0);
+  const isScrolledRef = useRef(false);
+  const isHeaderVisibleRef = useRef(true);
 
   useEffect(() => {
     const updateHeroThreshold = () => {
@@ -60,17 +62,27 @@ export default function Header() {
   }, [pathname]);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    setIsScrolled(latest > 50);
+    const nextScrolled = latest > 50;
+    if (isScrolledRef.current !== nextScrolled) {
+      isScrolledRef.current = nextScrolled;
+      setIsScrolled(nextScrolled);
+    }
 
     if (mobileMenuOpen) {
       lastScrollYRef.current = latest;
-      setIsHeaderVisible(true);
+      if (!isHeaderVisibleRef.current) {
+        isHeaderVisibleRef.current = true;
+        setIsHeaderVisible(true);
+      }
       return;
     }
 
     if (pathname === '/' && latest < heroEndThresholdRef.current) {
       lastScrollYRef.current = latest;
-      setIsHeaderVisible(true);
+      if (!isHeaderVisibleRef.current) {
+        isHeaderVisibleRef.current = true;
+        setIsHeaderVisible(true);
+      }
       return;
     }
 
@@ -78,11 +90,20 @@ export default function Header() {
     const delta = latest - previous;
 
     if (latest <= 24) {
-      setIsHeaderVisible(true);
+      if (!isHeaderVisibleRef.current) {
+        isHeaderVisibleRef.current = true;
+        setIsHeaderVisible(true);
+      }
     } else if (delta > 8) {
-      setIsHeaderVisible(false);
+      if (isHeaderVisibleRef.current) {
+        isHeaderVisibleRef.current = false;
+        setIsHeaderVisible(false);
+      }
     } else if (delta < -8) {
-      setIsHeaderVisible(true);
+      if (!isHeaderVisibleRef.current) {
+        isHeaderVisibleRef.current = true;
+        setIsHeaderVisible(true);
+      }
     }
 
     lastScrollYRef.current = latest;
@@ -101,9 +122,9 @@ export default function Header() {
     <>
       <motion.header
         className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${headerBg}`}
-        initial={{ y: -100 }}
+        initial={{ y: -72, opacity: 0.96 }}
         animate={{ y: isHeaderVisible || mobileMenuOpen ? 0 : -96 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.46, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="w-full px-6 lg:px-12 h-20 flex items-center justify-between">
           <Link href="/" className="relative z-50 flex items-center">
