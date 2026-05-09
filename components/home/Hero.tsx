@@ -503,8 +503,8 @@ export default function Hero() {
           style={{ height: heroScrollHeight }}
         >
           <div className={isPinned
-            ? 'fixed left-0 right-0 top-20 z-0 h-[calc(100svh-5rem)] overflow-hidden border-b border-brand-pearl bg-white'
-            : 'absolute inset-x-0 bottom-0 z-0 h-[calc(100svh-5rem)] overflow-hidden border-b border-brand-pearl bg-white'}>
+            ? 'fixed left-0 right-0 top-0 z-0 h-[100svh] overflow-hidden border-b border-brand-pearl bg-white'
+            : 'absolute inset-x-0 bottom-0 z-0 h-[100svh] overflow-hidden border-b border-brand-pearl bg-white'}>
             <div className="relative h-[36svh] min-h-[220px] w-full overflow-hidden bg-brand-pearl">
               <motion.div
                 className="absolute inset-0"
@@ -573,10 +573,10 @@ export default function Hero() {
       >
       <div
         className={isPinned
-          ? 'fixed left-1/2 top-20 z-0 w-full max-w-[1920px] -translate-x-1/2 md:top-[5rem] md:w-[calc(100%-16px)] md:max-w-[calc(1920px-16px)]'
+          ? 'fixed left-1/2 top-0 z-0 w-full max-w-[1920px] -translate-x-1/2'
           : 'absolute inset-x-0 bottom-0 z-0'}
       >
-        <div className="flex h-[calc(100svh-5rem)] w-full flex-col overflow-hidden md:h-[calc(100svh-5rem)] md:flex-row">
+        <div className="flex h-[100svh] w-full flex-col overflow-hidden md:h-[100svh] md:flex-row">
           <div className="hidden w-12 shrink-0 items-center justify-center border-r border-brand-charcoal bg-brand-black shadow-sm md:flex">
           <span className="rotate-[-90deg] whitespace-nowrap text-[11px] font-bold uppercase tracking-[0.34em] text-brand-pearl/85">
             Excellence Since 1994 / Dhaka

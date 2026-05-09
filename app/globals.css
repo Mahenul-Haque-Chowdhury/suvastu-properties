@@ -17,13 +17,13 @@
 
 @layer base {
   html {
-    overflow-x: hidden;
+    overflow-x: clip;
     position: relative;
   }
 
   body {
     @apply bg-background text-foreground font-sans selection:bg-brand-stone selection:text-brand-black;
-    overflow-x: hidden;
+    overflow-x: clip;
     position: relative;
   }
 }

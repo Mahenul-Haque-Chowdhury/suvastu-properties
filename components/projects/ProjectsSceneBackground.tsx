@@ -181,7 +181,7 @@ export default function ProjectsSceneBackground() {
 
     const getLocalProgress = () => {
       const rect = sectionEl.getBoundingClientRect();
-      const pinOffset = window.innerWidth < 768 ? 64 : 80;
+      const pinOffset = 0;
       const total = Math.max(sectionEl.offsetHeight - window.innerHeight, 1);
       const rawProgress = clamp((pinOffset - rect.top) / total, 0, 1);
 
@@ -191,7 +191,7 @@ export default function ProjectsSceneBackground() {
 
     const updateScrollTargets = () => {
       const rect = sectionEl.getBoundingClientRect();
-      const pinOffset = window.innerWidth < 768 ? 64 : 80;
+      const pinOffset = 0;
       const progress = getLocalProgress();
       const travel = THREE.MathUtils.smoothstep(progress, 0, 1);
       const rise = Math.sin(travel * Math.PI);
@@ -345,10 +345,10 @@ export default function ProjectsSceneBackground() {
   return (
     <section ref={sectionRef} className="relative h-[260vh] overflow-clip border-y border-brand-pearl bg-[linear-gradient(180deg,#edf3f8_0%,#dce7f4_100%)] md:h-[300vh] lg:h-[360vh] xl:h-[380vh]">
       <div className={pinPhase === 'pinned'
-        ? 'fixed left-0 right-0 top-16 z-0 h-[calc(100svh-4rem)] overflow-hidden will-change-transform md:top-20 md:h-[calc(100svh-5rem)]'
+        ? 'fixed left-0 right-0 top-0 z-0 h-[100svh] overflow-hidden will-change-transform'
         : pinPhase === 'before'
-          ? 'absolute inset-x-0 top-0 z-0 h-[calc(100svh-4rem)] overflow-hidden will-change-transform md:h-[calc(100svh-5rem)]'
-          : 'absolute inset-x-0 bottom-0 z-0 h-[calc(100svh-4rem)] overflow-hidden will-change-transform md:h-[calc(100svh-5rem)]'}>
+          ? 'absolute inset-x-0 top-0 z-0 h-[100svh] overflow-hidden will-change-transform'
+          : 'absolute inset-x-0 bottom-0 z-0 h-[100svh] overflow-hidden will-change-transform'}>
         <canvas ref={canvasRef} className="h-full w-full" aria-label="A cinematic 3D skyscraper view" />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(30,46,64,0.18),transparent_30%,transparent_72%,rgba(30,46,64,0.16)),radial-gradient(circle_at_center,transparent_50%,rgba(69,96,122,0.16)_100%)]" />
 

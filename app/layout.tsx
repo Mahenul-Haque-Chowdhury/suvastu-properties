@@ -67,7 +67,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
         <SmoothScroller>
-          <div className="w-full max-w-[1920px] min-h-screen border-x-0 md:border-x-8 border-brand-pearl flex flex-col relative bg-white">
+          <div className="w-full max-w-[1920px] min-h-screen flex flex-col relative bg-white">
             <Header />
             <main className="flex-grow">{children}</main>
             <Footer />
